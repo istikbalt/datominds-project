@@ -31,25 +31,18 @@ async function getSession(req) {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith("Bearer ")) return null;
   const token = auth.slice(7);
-  const [rows] = await pool.execute(
-    "SELECT * FROM sessions WHERE token = ? AND expires_at > NOW() LIMIT 1", [token]
-  );
-  return rows[0] || null;
+  try {
+    const [rows] = await pool.execute(
+      "SELECT * FROM sessions WHERE token = ? AND expires_at > NOW() LIMIT 1", [token]
+    );
+    return rows[0] || null;
+  } catch { return null; }
 }
 
 async function requireAuth(req, res) {
   const session = await getSession(req);
   if (!session) { res.status(401).json({ success: false, error: "Login required." }); return null; }
   return session;
-}
-
-async function createNotification(conn, data) {
-  try {
-    await conn.execute(
-      `INSERT INTO notifications (recipient_type, recipient_business_id, recipient_user_id, type, post_id, actor_type, actor_business_id, actor_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [data.recipient_type, data.recipient_business_id || null, data.recipient_user_id || null, data.type, data.post_id || null, data.actor_type, data.actor_business_id || null, data.actor_user_id || null]
-    );
-  } catch (e) { console.error("Notification error:", e.message); }
 }
 
 // HEALTH
@@ -70,7 +63,7 @@ app.get("/api/categories", async (req, res) => {
   } catch (error) { res.status(500).json({ success: false, error: error.message }); }
 });
 
-// REGISTER INDIVIDUAL
+// REGISTER
 app.post("/api/auth/register", async (req, res) => {
   const { first_name, last_name, email, password, phone } = req.body;
   if (!first_name || !last_name || !email || !password) {
@@ -117,7 +110,7 @@ app.post("/api/auth/login", async (req, res) => {
 app.post("/api/auth/logout", async (req, res) => {
   const auth = req.headers.authorization;
   if (auth && auth.startsWith("Bearer ")) {
-    await pool.execute("DELETE FROM sessions WHERE token = ?", [auth.slice(7)]);
+    try { await pool.execute("DELETE FROM sessions WHERE token = ?", [auth.slice(7)]); } catch {}
   }
   res.json({ success: true });
 });
@@ -238,7 +231,6 @@ app.post("/api/posts", async (req, res) => {
         const [bRows] = await connection.execute("SELECT id FROM businesses WHERE slug = ? LIMIT 1", [bSlug]);
         if (bRows.length > 0) {
           await connection.execute("INSERT IGNORE INTO post_tags (post_id, business_id) VALUES (?, ?)", [postId, bRows[0].id]);
-          await createNotification(connection, { recipient_type: "business", recipient_business_id: bRows[0].id, type: "tag", post_id: postId, actor_type: "business", actor_business_id: session.business_id });
         }
       }
     }
@@ -258,9 +250,9 @@ app.post("/api/posts/:id/share", async (req, res) => {
   try {
     const [original] = await pool.execute("SELECT id, author_business_id FROM posts WHERE id = ? AND status = 'published' LIMIT 1", [postId]);
     if (!original.length) return res.status(404).json({ success: false, error: "Post not found." });
-    let authorType, bizId, userId;
-    if (session.user_type === "individual") { authorType = "individual"; bizId = null; userId = session.user_id; }
-    else { authorType = "business"; bizId = session.business_id; userId = null; }
+    const authorType = session.user_type === "individual" ? "individual" : "business";
+    const bizId = session.user_type === "business" ? session.business_id : null;
+    const userId = session.user_type === "individual" ? session.user_id : null;
     const [result] = await pool.execute(
       "INSERT INTO posts (author_type, author_business_id, author_user_id, post_type, shared_post_id, content) VALUES (?, ?, ?, 'share', ?, ?)",
       [authorType, bizId, userId, postId, content || ""]
@@ -269,7 +261,7 @@ app.post("/api/posts/:id/share", async (req, res) => {
   } catch (error) { return res.status(500).json({ success: false, error: error.message }); }
 });
 
-// FEED
+// FEED - basit versiyon, LIMIT değerleri integer olarak gömülü
 app.get("/api/feed", async (req, res) => {
   try {
     const session = await getSession(req);
@@ -277,42 +269,61 @@ app.get("/api/feed", async (req, res) => {
     const limit = 20;
     const offset = (page - 1) * limit;
 
-    // Basit feed - tüm postları getir (session olmadan da çalışır)
-    let isLikedSQL = "0";
-    let isLikedParams = [];
+    let posts;
 
-    if (session) {
-      if (session.user_type === "individual") {
-        isLikedSQL = "(SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_user_id = ?)";
-        isLikedParams = [session.user_id];
-      } else if (session.user_type === "business" && session.business_id) {
-        isLikedSQL = "(SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_business_id = ?)";
-        isLikedParams = [session.business_id];
-      }
+    if (session && session.user_type === "individual") {
+      const uid = session.user_id;
+      [posts] = await pool.query(
+        `SELECT p.id, p.author_type, p.post_type, p.content, p.image_url, p.shared_post_id, p.created_at,
+         b.id AS business_id, b.business_name, b.slug AS business_slug,
+         u.id AS user_id, u.first_name, u.last_name, u.avatar_url,
+         (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS like_count,
+         (SELECT COUNT(*) FROM comments WHERE post_id = p.id AND status = 'visible') AS comment_count,
+         (SELECT COUNT(*) FROM posts p2 WHERE p2.shared_post_id = p.id AND p2.post_type = 'share') AS share_count,
+         (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_user_id = ${uid}) AS is_liked
+         FROM posts p
+         LEFT JOIN businesses b ON p.author_business_id = b.id
+         LEFT JOIN users u ON p.author_user_id = u.id
+         WHERE p.status = 'published'
+         ORDER BY p.created_at DESC
+         LIMIT ${limit} OFFSET ${offset}`
+      );
+    } else if (session && session.user_type === "business" && session.business_id) {
+      const bid = session.business_id;
+      [posts] = await pool.query(
+        `SELECT p.id, p.author_type, p.post_type, p.content, p.image_url, p.shared_post_id, p.created_at,
+         b.id AS business_id, b.business_name, b.slug AS business_slug,
+         u.id AS user_id, u.first_name, u.last_name, u.avatar_url,
+         (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS like_count,
+         (SELECT COUNT(*) FROM comments WHERE post_id = p.id AND status = 'visible') AS comment_count,
+         (SELECT COUNT(*) FROM posts p2 WHERE p2.shared_post_id = p.id AND p2.post_type = 'share') AS share_count,
+         (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_business_id = ${bid}) AS is_liked
+         FROM posts p
+         LEFT JOIN businesses b ON p.author_business_id = b.id
+         LEFT JOIN users u ON p.author_user_id = u.id
+         WHERE p.status = 'published'
+         ORDER BY p.created_at DESC
+         LIMIT ${limit} OFFSET ${offset}`
+      );
+    } else {
+      [posts] = await pool.query(
+        `SELECT p.id, p.author_type, p.post_type, p.content, p.image_url, p.shared_post_id, p.created_at,
+         b.id AS business_id, b.business_name, b.slug AS business_slug,
+         u.id AS user_id, u.first_name, u.last_name, u.avatar_url,
+         (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS like_count,
+         (SELECT COUNT(*) FROM comments WHERE post_id = p.id AND status = 'visible') AS comment_count,
+         (SELECT COUNT(*) FROM posts p2 WHERE p2.shared_post_id = p.id AND p2.post_type = 'share') AS share_count,
+         0 AS is_liked
+         FROM posts p
+         LEFT JOIN businesses b ON p.author_business_id = b.id
+         LEFT JOIN users u ON p.author_user_id = u.id
+         WHERE p.status = 'published'
+         ORDER BY p.created_at DESC
+         LIMIT ${limit} OFFSET ${offset}`
+      );
     }
 
-    const query = `
-      SELECT
-        p.id, p.author_type, p.post_type, p.content, p.image_url,
-        p.shared_post_id, p.created_at,
-        b.id AS business_id, b.business_name, b.slug AS business_slug,
-        u.id AS user_id, u.first_name, u.last_name, u.avatar_url,
-        (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS like_count,
-        (SELECT COUNT(*) FROM comments WHERE post_id = p.id AND status = 'visible') AS comment_count,
-        (SELECT COUNT(*) FROM posts WHERE shared_post_id = p.id AND post_type = 'share') AS share_count,
-        ${isLikedSQL} AS is_liked
-      FROM posts p
-      LEFT JOIN businesses b ON p.author_business_id = b.id
-      LEFT JOIN users u ON p.author_user_id = u.id
-      WHERE p.status = 'published'
-      ORDER BY p.created_at DESC
-      LIMIT ? OFFSET ?
-    `;
-
-    const params = [...isLikedParams, limit, offset];
-    const [posts] = await pool.execute(query, params);
-
-    // Share'lerin orijinal postlarını getir
+    // Shared post'ların orijinallerini getir
     const sharedIds = posts.filter(p => p.shared_post_id).map(p => p.shared_post_id);
     let sharedPosts = {};
     if (sharedIds.length > 0) {
@@ -326,12 +337,14 @@ app.get("/api/feed", async (req, res) => {
 
     const enriched = posts.map(p => ({
       ...p,
-      is_liked: p.is_liked > 0,
+      is_liked: Number(p.is_liked) > 0,
       original_post: p.shared_post_id ? sharedPosts[p.shared_post_id] || null : null
     }));
 
     return res.json({ success: true, posts: enriched, page, has_more: posts.length === limit });
-  } catch (error) { return res.status(500).json({ success: false, error: error.message }); }
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 // BUSINESS POSTS
@@ -346,29 +359,20 @@ app.get("/api/business/:slug/posts", async (req, res) => {
     const businessId = businesses[0].id;
     const session = await getSession(req);
 
-    let isLikedSQL = "0";
-    let isLikedParams = [];
-    if (session) {
-      if (session.user_type === "individual") {
-        isLikedSQL = "(SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_user_id = ?)";
-        isLikedParams = [session.user_id];
-      } else if (session.user_type === "business" && session.business_id) {
-        isLikedSQL = "(SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_business_id = ?)";
-        isLikedParams = [session.business_id];
-      }
-    }
+    let isLikedExpr = "0";
+    if (session && session.user_type === "individual") isLikedExpr = `(SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_user_id = ${session.user_id})`;
+    else if (session && session.user_type === "business" && session.business_id) isLikedExpr = `(SELECT COUNT(*) FROM likes WHERE post_id = p.id AND liker_business_id = ${session.business_id})`;
 
-    const [posts] = await pool.execute(
+    const [posts] = await pool.query(
       `SELECT p.id, p.author_type, p.post_type, p.content, p.image_url, p.shared_post_id, p.created_at,
        b.business_name, b.slug AS business_slug,
        (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS like_count,
        (SELECT COUNT(*) FROM comments WHERE post_id = p.id AND status = 'visible') AS comment_count,
-       (SELECT COUNT(*) FROM posts WHERE shared_post_id = p.id) AS share_count,
-       ${isLikedSQL} AS is_liked
+       (SELECT COUNT(*) FROM posts p2 WHERE p2.shared_post_id = p.id) AS share_count,
+       ${isLikedExpr} AS is_liked
        FROM posts p LEFT JOIN businesses b ON p.author_business_id = b.id
-       WHERE p.author_business_id = ? AND p.post_type = 'post' AND p.status = 'published'
-       ORDER BY p.created_at DESC LIMIT ? OFFSET ?`,
-      [...isLikedParams, businessId, limit, offset]
+       WHERE p.author_business_id = ${businessId} AND p.post_type = 'post' AND p.status = 'published'
+       ORDER BY p.created_at DESC LIMIT ${limit} OFFSET ${offset}`
     );
 
     const [taggedPosts] = await pool.execute(
@@ -376,7 +380,7 @@ app.get("/api/business/:slug/posts", async (req, res) => {
       [businessId]
     );
 
-    return res.json({ success: true, posts: posts.map(p => ({ ...p, is_liked: p.is_liked > 0 })), tagged_posts: taggedPosts, page, has_more: posts.length === limit });
+    return res.json({ success: true, posts: posts.map(p => ({ ...p, is_liked: Number(p.is_liked) > 0 })), tagged_posts: taggedPosts, page, has_more: posts.length === limit });
   } catch (error) { return res.status(500).json({ success: false, error: error.message }); }
 });
 
@@ -386,7 +390,7 @@ app.post("/api/posts/:id/like", async (req, res) => {
   if (!session) return;
   const postId = Number(req.params.id);
   try {
-    const [posts] = await pool.execute("SELECT id, author_business_id FROM posts WHERE id = ? LIMIT 1", [postId]);
+    const [posts] = await pool.execute("SELECT id FROM posts WHERE id = ? LIMIT 1", [postId]);
     if (!posts.length) return res.status(404).json({ success: false, error: "Post not found." });
     let existing;
     if (session.user_type === "individual") {
@@ -397,7 +401,7 @@ app.post("/api/posts/:id/like", async (req, res) => {
     if (existing.length > 0) {
       await pool.execute("DELETE FROM likes WHERE id = ?", [existing[0].id]);
       const [[{ cnt }]] = await pool.execute("SELECT COUNT(*) AS cnt FROM likes WHERE post_id = ?", [postId]);
-      return res.json({ success: true, liked: false, like_count: cnt });
+      return res.json({ success: true, liked: false, like_count: Number(cnt) });
     } else {
       if (session.user_type === "individual") {
         await pool.execute("INSERT INTO likes (post_id, liker_type, liker_user_id) VALUES (?, 'individual', ?)", [postId, session.user_id]);
@@ -405,7 +409,7 @@ app.post("/api/posts/:id/like", async (req, res) => {
         await pool.execute("INSERT INTO likes (post_id, liker_type, liker_business_id) VALUES (?, 'business', ?)", [postId, session.business_id]);
       }
       const [[{ cnt }]] = await pool.execute("SELECT COUNT(*) AS cnt FROM likes WHERE post_id = ?", [postId]);
-      return res.json({ success: true, liked: true, like_count: cnt });
+      return res.json({ success: true, liked: true, like_count: Number(cnt) });
     }
   } catch (error) { return res.status(500).json({ success: false, error: error.message }); }
 });
@@ -460,7 +464,7 @@ app.get("/api/notifications", async (req, res) => {
     );
     await pool.execute(`UPDATE notifications SET is_read = 1 WHERE ${where}`, params);
     const [[{ unread }]] = await pool.execute(`SELECT COUNT(*) AS unread FROM notifications WHERE ${where} AND is_read = 0`, params);
-    return res.json({ success: true, notifications, unread_count: unread });
+    return res.json({ success: true, notifications, unread_count: Number(unread) });
   } catch (error) { return res.status(500).json({ success: false, error: error.message }); }
 });
 
@@ -495,8 +499,7 @@ app.get("/api/search", async (req, res) => {
     const city = req.query.city || "";
     if (q.length < 2 && !category && !city) return res.json({ success: true, businesses: [] });
     let query = `SELECT b.id, b.business_name, b.slug, b.business_type, b.short_description, b.city, b.country, c.name AS category_name,
-      (SELECT COUNT(*) FROM follows WHERE following_business_id = b.id) AS follower_count,
-      (SELECT COUNT(*) FROM posts WHERE author_business_id = b.id AND status = 'published') AS post_count
+      (SELECT COUNT(*) FROM follows WHERE following_business_id = b.id) AS follower_count
       FROM businesses b LEFT JOIN categories c ON b.category_id = c.id WHERE b.status = 'published'`;
     const params = [];
     if (q) { query += " AND (b.business_name LIKE ? OR b.short_description LIKE ?)"; params.push(`%${q}%`, `%${q}%`); }
