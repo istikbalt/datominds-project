@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile · Datominds Network</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0f14; --surface: #161a22; --surface2: #1d2230;
+      --border: #252c3a; --text: #e8eaf0; --muted: #6b7491;
+      --accent: #4f8ef7; --accent-dim: rgba(79,142,247,0.12);
+      --success: #34d399; --danger: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,15,20,0.92); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: 11px; background: var(--accent);
+      display: grid; place-items: center; font-family: 'DM Serif Display', serif; color: white;
+    }
+    .brand-name { font-weight: 600; font-size: 0.95rem; }
+    .nav-right { display: flex; gap: 8px; }
+    .btn-sm {
+      padding: 8px 16px; border-radius: 999px; font-size: 0.88rem;
+      font-weight: 600; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center;
+      font-family: 'DM Sans', sans-serif; border: none; transition: opacity 0.2s;
+    }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-sm:hover { opacity: 0.82; }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+
+    /* PROFILE HEADER */
+    .profile-header {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden; margin-bottom: 20px;
+    }
+    .profile-cover {
+      height: 120px;
+      background: linear-gradient(135deg, #1a2a4a 0%, #1d2230 50%, #1a3040 100%);
+    }
+    .profile-body { padding: 0 24px 24px; }
+    .profile-avatar-wrap { margin-top: -32px; margin-bottom: 14px; }
+    .profile-avatar {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: linear-gradient(135deg, #34d399, #059669);
+      display: grid; place-items: center;
+      font-size: 1.6rem; font-weight: 700; color: white;
+      border: 3px solid var(--surface);
+    }
+    .profile-name { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 4px; }
+    .profile-role {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 600;
+      background: var(--accent-dim); color: var(--accent); margin-bottom: 10px;
+    }
+    .profile-bio { font-size: 0.9rem; color: var(--muted); margin-bottom: 16px; }
+    .profile-stats { display: flex; gap: 24px; }
+    .stat { text-align: center; }
+    .stat-val { font-size: 1.2rem; font-weight: 700; }
+    .stat-lbl { font-size: 0.78rem; color: var(--muted); }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 6px; }
+    .tab {
+      flex: 1; padding: 9px; border-radius: 10px; text-align: center;
+      font-size: 0.88rem; font-weight: 500; cursor: pointer;
+      color: var(--muted); border: none; background: none;
+      font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    }
+    .tab.active { background: var(--accent); color: white; font-weight: 600; }
+
+    /* CARDS */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px; margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--muted); }
+    .card-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card-label a { color: var(--accent); text-decoration: none; }
+    .card-content { font-size: 0.92rem; line-height: 1.6; color: var(--text); }
+    .card-meta { font-size: 0.78rem; color: var(--muted); margin-top: 8px; }
+
+    .shared-preview {
+      margin-top: 10px; padding: 12px; border-radius: 10px;
+      background: var(--surface2); border: 1px solid var(--border);
+    }
+    .shared-preview .from { font-size: 0.78rem; color: var(--muted); margin-bottom: 5px; }
+    .shared-preview .from a { color: var(--accent); text-decoration: none; }
+    .shared-preview .text { font-size: 0.88rem; color: var(--text); }
+
+    /* FOLLOWING */
+    .following-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .follow-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px; text-decoration: none;
+      transition: border-color 0.2s; display: block;
+    }
+    .follow-card:hover { border-color: var(--accent); }
+    .follow-card-avatar {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      display: grid; place-items: center; font-weight: 700; color: white;
+      margin-bottom: 10px;
+    }
+    .follow-card-name { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .follow-card-cat { font-size: 0.78rem; color: var(--muted); }
+
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--text); margin-bottom: 8px; }
+    .loading { text-align: center; padding: 40px; color: var(--muted); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .tab-content.active.following-grid { display: grid; }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="feed.html" class="brand">
+      <div class="brand-mark">D</div>
+      <span class="brand-name">Datominds</span>
+    </a>
+    <div class="nav-right" id="navRight"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="profileHeader" class="profile-header">
+    <div class="loading">Loading profile...</div>
+  </div>
+
+  <div class="tabs" id="tabsBar" style="display:none;">
+    <button class="tab active" onclick="switchTab('shares')">Shares</button>
+    <button class="tab" onclick="switchTab('comments')">Comments</button>
+    <button class="tab" onclick="switchTab('following')">Following</button>
+  </div>
+
+  <div id="tab-shares" class="tab-content active">
+    <div class="loading">Loading...</div>
+  </div>
+  <div id="tab-comments" class="tab-content">
+    <div class="loading">Loading...</div>
+  </div>
+  <div id="tab-following" class="tab-content">
+    <div class="loading">Loading...</div>
+  </div>
+</div>
+
+<script>
+const API = "https://datominds-backend.onrender.com";
+
+function getUser() { try { return JSON.parse(localStorage.getItem("dn_user")); } catch { return null; } }
+function getToken() { return localStorage.getItem("dn_token"); }
+
+function escHtml(s) {
+  if (!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function timeAgo(dateStr) {
+  const d = new Date(dateStr);
+  const diff = (Date.now() - d.getTime()) / 1000;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return Math.floor(diff/60) + "m ago";
+  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function getUserIdFromUrl() {
+  return new URLSearchParams(window.location.search).get("id");
+}
+
+function switchTab(tab) {
+  document.querySelectorAll(".tab").forEach((t, i) => {
+    const tabs = ["shares", "comments", "following"];
+    t.classList.toggle("active", tabs[i] === tab);
+  });
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+  document.getElementById(`tab-${tab}`).classList.add("active");
+}
+
+function setupNav() {
+  const user = getUser();
+  const navRight = document.getElementById("navRight");
+  if (user) {
+    navRight.innerHTML = `
+      <a href="feed.html" class="btn-sm btn-ghost">Feed</a>
+      <button class="btn-sm btn-ghost" onclick="doLogout()">Sign out</button>
+    `;
+  } else {
+    navRight.innerHTML = `
+      <a href="login.html" class="btn-sm btn-ghost">Sign in</a>
+      <a href="register.html" class="btn-sm btn-primary">Join</a>
+    `;
+  }
+}
+
+async function doLogout() {
+  const token = getToken();
+  if (token) await fetch(`${API}/api/auth/logout`, { method: "POST", headers: { "Authorization": "Bearer " + token } });
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+async function loadProfile() {
+  const userId = getUserIdFromUrl();
+  if (!userId) {
+    document.getElementById("profileHeader").innerHTML = '<div class="loading">No user specified.</div>';
+    return;
+  }
+
+  const token = getToken();
+  const headers = token ? { "Authorization": "Bearer " + token } : {};
+
+  try {
+    const res = await fetch(`${API}/api/profile/${userId}`, { headers });
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById("profileHeader").innerHTML = '<div class="loading">User not found.</div>';
+      return;
+    }
+
+    const u = data.user;
+    const initial = (u.first_name || "?").charAt(0).toUpperCase();
+    const fullName = `${u.first_name} ${u.last_name}`;
+    const joinDate = new Date(u.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+    document.getElementById("profileHeader").innerHTML = `
+      <div class="profile-cover"></div>
+      <div class="profile-body">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar">${initial}</div>
+        </div>
+        <div class="profile-name">${escHtml(fullName)}</div>
+        <div class="profile-role">Individual Member</div>
+        ${u.bio ? `<div class="profile-bio">${escHtml(u.bio)}</div>` : ""}
+        <div class="profile-stats">
+          <div class="stat"><div class="stat-val">${data.shares.length}</div><div class="stat-lbl">Shares</div></div>
+          <div class="stat"><div class="stat-val">${data.comments.length}</div><div class="stat-lbl">Comments</div></div>
+          <div class="stat"><div class="stat-val">${data.following.length}</div><div class="stat-lbl">Following</div></div>
+          <div class="stat"><div class="stat-val" style="color:var(--muted);font-size:0.85rem;">${joinDate}</div><div class="stat-lbl">Joined</div></div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("tabsBar").style.display = "flex";
+
+    // SHARES TAB
+    if (data.shares.length === 0) {
+      document.getElementById("tab-shares").innerHTML = `<div class="empty-state"><h3>No shares yet</h3><p>Shares will appear here when this user shares business posts.</p></div>`;
+    } else {
+      document.getElementById("tab-shares").innerHTML = data.shares.map(s => `
+        <div class="card">
+          <div class="card-label">🔁 Shared from <a href="business.html?slug=${s.original_business_slug}">${escHtml(s.original_business_name)}</a></div>
+          ${s.content ? `<div class="card-content">${escHtml(s.content)}</div>` : ""}
+          <div class="shared-preview">
+            <div class="from">Original post by <a href="business.html?slug=${s.original_business_slug}">${escHtml(s.original_business_name)}</a></div>
+            <div class="text">${escHtml((s.original_content || "").substring(0, 180))}${(s.original_content || "").length > 180 ? "…" : ""}</div>
+          </div>
+          <div class="card-meta">${timeAgo(s.created_at)}</div>
+        </div>
+      `).join("");
+    }
+
+    // COMMENTS TAB
+    if (data.comments.length === 0) {
+      document.getElementById("tab-comments").innerHTML = `<div class="empty-state"><h3>No comments yet</h3><p>Comments on business posts will appear here.</p></div>`;
+    } else {
+      document.getElementById("tab-comments").innerHTML = data.comments.map(c => `
+        <div class="card">
+          <div class="card-label">💬 Commented on <a href="business.html?slug=${c.business_slug}">${escHtml(c.business_name)}</a></div>
+          <div class="card-content">${escHtml(c.content)}</div>
+          <div class="card-meta">${timeAgo(c.created_at)}</div>
+        </div>
+      `).join("");
+    }
+
+    // FOLLOWING TAB
+    if (data.following.length === 0) {
+      document.getElementById("tab-following").innerHTML = `<div class="empty-state"><h3>Not following anyone</h3><p><a href="index.html" style="color:var(--accent);text-decoration:none;">Explore businesses</a> to follow.</p></div>`;
+    } else {
+      document.getElementById("tab-following").innerHTML = `
+        <div class="following-grid">
+          ${data.following.map(b => `
+            <a class="follow-card" href="business.html?slug=${b.slug}">
+              <div class="follow-card-avatar">${b.business_name.charAt(0)}</div>
+              <div class="follow-card-name">${escHtml(b.business_name)}</div>
+              <div class="follow-card-cat">${escHtml(b.category_name || "")}</div>
+            </a>
+          `).join("")}
+        </div>
+      `;
+    }
+
+  } catch (e) {
+    document.getElementById("profileHeader").innerHTML = '<div class="loading">Connection error.</div>';
+  }
+}
+
+setupNav();
+loadProfile();
+</script>
+</body>
+</html>

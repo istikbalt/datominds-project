@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datominds Network</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-2: #f0f4f8;
+      --text: #14213d;
+      --muted: #5f6b7a;
+      --line: #dbe3ec;
+      --accent: #2563eb;
+      --accent-soft: #eaf2ff;
+      --success: #0f9d58;
+      --shadow: 0 14px 40px rgba(20, 33, 61, 0.08);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --max: 1220px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(246, 248, 251, 0.9);
+      border-bottom: 1px solid rgba(219, 227, 236, 0.8);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8 60%, #60a5fa);
+      color: white;
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow);
+      font-weight: 800;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav a,
+    .ghost-btn,
+    .primary-btn,
+    .chip,
+    .mini-btn {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 10px 16px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary-btn {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .ghost-btn {
+      background: transparent;
+    }
+
+    .hero {
+      padding: 56px 0 28px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .panel,
+    .card,
+    .stat-card,
+    .search-card,
+    .business-card,
+    .post-card,
+    .plan-card,
+    .dashboard-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 32px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    h1, h2, h3, h4, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      line-height: 1.05;
+      margin-bottom: 14px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 720px;
+    }
+
+    .search-shell {
+      margin-top: 24px;
+      padding: 14px;
+      border-radius: 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .fake-input {
+      flex: 1 1 260px;
+      min-height: 52px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: #7a8797;
+      background: #fbfcfe;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      background: #fbfcfe;
+      font-size: 0.9rem;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 18px;
+    }
+
+    .stat-card {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat-item {
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .muted { color: var(--muted); }
+
+    section {
+      padding: 22px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .category-grid,
+    .featured-grid,
+    .post-grid,
+    .pricing-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .category-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .card p,
+    .business-card p,
+    .post-card p,
+    .dashboard-card p,
+    .plan-card p { color: var(--muted); }
+
+    .featured-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .business-card {
+      overflow: hidden;
+    }
+
+    .business-cover {
+      height: 140px;
+      background: linear-gradient(135deg, #cfe0ff, #eef4ff 60%, #d7f1e2);
+      position: relative;
+    }
+
+    .business-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: white;
+      border: 4px solid white;
+      position: absolute;
+      left: 18px;
+      bottom: -20px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+
+    .business-body {
+      padding: 34px 18px 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .meta-row,
+    .action-row,
+    .tiny-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .rating {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .tag {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.84rem;
+    }
+
+    .mini-btn {
+      padding: 9px 14px;
+      font-size: 0.9rem;
+      background: #fbfcfe;
+    }
+
+    .profile-preview {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .profile-header {
+      min-height: 220px;
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff 55%, #e6fff3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-header::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+    }
+
+    .profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.8);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .profile-logo {
+      width: 86px;
+      height: 86px;
+      margin-top: 18px;
+      border-radius: 24px;
+      background: white;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tabs span {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .tabs .active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .profile-layout {
+      display: grid;
+      gap: 14px;
+    }
+
+    .subpanel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fbfcfe;
+    }
+
+    .list-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .list-row:last-child { border-bottom: 0; }
+
+    .search-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+    }
+
+    .search-card,
+    .dashboard-card {
+      padding: 20px;
+    }
+
+    .filter-stack,
+    .result-stack,
+    .metric-grid,
+    .dashboard-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .filter-box,
+    .result-card,
+    .metric,
+    .widget {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fbfcfe;
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .result-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: var(--accent-soft);
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .post-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .post-card { overflow: hidden; }
+
+    .post-media {
+      height: 180px;
+      background: linear-gradient(135deg, #e0e7ff, #f5f3ff 55%, #dcfce7);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      color: #344054;
+      font-weight: 700;
+    }
+
+    .post-body {
+      padding: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .dashboard-shell {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+    }
+
+    .sidebar {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 10px;
+      align-self: start;
+      position: sticky;
+      top: 92px;
+    }
+
+    .sidebar .item {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #fbfcfe;
+      border: 1px solid var(--line);
+      font-weight: 600;
+    }
+
+    .sidebar .item.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .metric h3 {
+      font-size: 1.55rem;
+      margin-bottom: 6px;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+
+    .widget-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .widget-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .widget-row:last-child { border-bottom: 0; }
+
+    .pricing-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .plan-card {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .plan-card.featured {
+      border: 2px solid var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .feature-list span {
+      color: var(--muted);
+    }
+
+    .footer {
+      padding: 34px 0 48px;
+      color: var(--muted);
+    }
+
+    .footer-box {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .profile-preview,
+      .dashboard-shell,
+      .search-layout,
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-grid,
+      .category-grid,
+      .featured-grid,
+      .post-grid,
+      .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .section-head,
+      .footer-box {
+        align-items: flex-start;
+      }
+
+      .nav {
+        width: 100%;
+      }
+
+      .nav a,
+      .ghost-btn,
+      .primary-btn {
+        flex: 1 1 auto;
+      }
+
+      .metric-grid,
+      .category-grid,
+      .featured-grid,
+      .post-grid,
+      .pricing-grid,
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-card {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card,
+      .panel,
+      .search-card,
+      .dashboard-card,
+      .plan-card,
+      .card,
+      .stat-card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">D</div>
+        <div>
+          <div>Datominds Network</div>
+          <small class="muted">Business-first social platform</small>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="#">Home</a>
+        <a href="#">Explore</a>
+        <a href="#">Categories</a>
+        <a href="#">Pricing</a>
+        <a class="ghost-btn" href="#">Business Login</a>
+        <a class="primary-btn" href="create-business.html">Create Business Page</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <span class="eyebrow">All members are businesses</span>
+          <h1>A social platform built only for companies, stores, restaurants, and institutions.</h1>
+          <p>
+            Visitors can explore, search, review, and follow business activity, but only institutions can own pages,
+            publish posts, manage products, and promote their services.
+          </p>
+
+          <div class="search-shell">
+            <div class="fake-input">Search businesses, products, services, locations…</div>
+            <div class="fake-input">Toronto, ON</div>
+            <div class="primary-btn">Search</div>
+          </div>
+
+          <div class="hero-tags">
+            <span class="chip">Restaurants</span>
+            <span class="chip">Furniture</span>
+            <span class="chip">Education</span>
+            <span class="chip">Health</span>
+            <span class="chip">Local Services</span>
+            <span class="chip">Retail</span>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="stat-card">
+            <div>
+              <h3>Platform Snapshot</h3>
+              <p class="muted">A homepage concept showing how a business-only network can feel at first glance.</p>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-item">
+                <div class="stat-value">25K+</div>
+                <div class="muted">Business Pages</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">180K+</div>
+                <div class="muted">Monthly Visitors</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">8.4K</div>
+                <div class="muted">New Posts / Week</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">92%</div>
+                <div class="muted">Profile Completion</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div>
+              <h3>What makes it different?</h3>
+            </div>
+            <div class="list-row"><span>Members are institutions only</span><strong>Yes</strong></div>
+            <div class="list-row"><span>Visitors can browse without account</span><strong>Yes</strong></div>
+            <div class="list-row"><span>Posts + products + reviews together</span><strong>Yes</strong></div>
+            <div class="list-row"><span>Ads and analytics for businesses</span><strong>Built in</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Main categories</h2>
+            <p>Each business chooses a category and becomes discoverable through search, filters, and location-based exploration.</p>
+          </div>
+        </div>
+
+        <div class="category-grid">
+          <div class="card">
+            <div class="icon-box">R</div>
+            <h3>Restaurants</h3>
+            <p>Menus, offers, reservation prompts, reviews, and location details in one clean profile.</p>
+          </div>
+          <div class="card">
+            <div class="icon-box">F</div>
+            <h3>Furniture</h3>
+            <p>Product collections, featured inventory, promotions, store hours, and business posts.</p>
+          </div>
+          <div class="card">
+            <div class="icon-box">E</div>
+            <h3>Education</h3>
+            <p>Courses, enrollment campaigns, announcements, staff highlights, and contact options.</p>
+          </div>
+          <div class="card">
+            <div class="icon-box">S</div>
+            <h3>Services</h3>
+            <p>Listings for clinics, agencies, repair shops, consultants, and other service providers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Featured business cards</h2>
+            <p>Home feed cards combine profile identity, rating, category, short description, and quick action buttons.</p>
+          </div>
+        </div>
+
+        <div class="featured-grid">
+          <article class="business-card">
+            <div class="business-cover">
+              <div class="business-logo">TF</div>
+            </div>
+            <div class="business-body">
+              <div>
+                <h3>Tulip Furniture</h3>
+                <p>Modern furniture store with rotating collections, new arrivals, and promotional posts.</p>
+              </div>
+              <div class="meta-row">
+                <span class="rating">★ 4.8</span>
+                <span class="tag">Furniture</span>
+                <span class="tag">Toronto</span>
+              </div>
+              <div class="action-row">
+                <span class="mini-btn">View Profile</span>
+                <span class="mini-btn">Products</span>
+                <span class="mini-btn">Call</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="business-card">
+            <div class="business-cover" style="background: linear-gradient(135deg, #fed7aa, #fff7ed 60%, #fde68a);">
+              <div class="business-logo">BB</div>
+            </div>
+            <div class="business-body">
+              <div>
+                <h3>Blue Bowl Bistro</h3>
+                <p>Restaurant profile with menu items, story-style food updates, customer reviews, and booking CTA.</p>
+              </div>
+              <div class="meta-row">
+                <span class="rating">★ 4.7</span>
+                <span class="tag">Restaurant</span>
+                <span class="tag">North York</span>
+              </div>
+              <div class="action-row">
+                <span class="mini-btn">View Profile</span>
+                <span class="mini-btn">Offers</span>
+                <span class="mini-btn">Reserve</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="business-card">
+            <div class="business-cover" style="background: linear-gradient(135deg, #ddd6fe, #f5f3ff 60%, #dbeafe);">
+              <div class="business-logo">GS</div>
+            </div>
+            <div class="business-body">
+              <div>
+                <h3>Global Study Centre</h3>
+                <p>Institution page for programs, enrollment dates, weekly posts, and parent-facing communication.</p>
+              </div>
+              <div class="meta-row">
+                <span class="rating">★ 4.9</span>
+                <span class="tag">Education</span>
+                <span class="tag">Scarborough</span>
+              </div>
+              <div class="action-row">
+                <span class="mini-btn">View Profile</span>
+                <span class="mini-btn">Programs</span>
+                <span class="mini-btn">Message</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Business profile page preview</h2>
+            <p>Each business has one central public page with tabs for overview, posts, products or services, reviews, and company details.</p>
+          </div>
+        </div>
+
+        <div class="profile-preview">
+          <div class="panel">
+            <div class="profile-header">
+              <div class="profile-badge">Public Business Page</div>
+              <div class="profile-logo">TF</div>
+              <div style="margin-top: 16px; position: relative; z-index: 1;">
+                <h3>Tulip Furniture</h3>
+                <p class="muted">Modern home furniture showroom with product launches, seasonal campaigns, and in-store support.</p>
+                <div class="meta-row" style="margin-top: 12px;">
+                  <span class="tag">★ 4.8 rating</span>
+                  <span class="tag">Open now</span>
+                  <span class="tag">Toronto</span>
+                </div>
+              </div>
+            </div>
+            <div class="tabs">
+              <span class="active">Overview</span>
+              <span>Posts</span>
+              <span>Products</span>
+              <span>Reviews</span>
+              <span>About</span>
+            </div>
+          </div>
+
+          <div class="profile-layout">
+            <div class="subpanel">
+              <h3>Overview</h3>
+              <p style="margin-top: 8px;">Short business summary, featured product cards, opening hours, and latest updates appear first.</p>
+            </div>
+            <div class="subpanel">
+              <h3>Recent posts</h3>
+              <div class="list-row">
+                <span>Spring collection launched with 12 new items</span>
+                <strong>2h ago</strong>
+              </div>
+              <div class="list-row">
+                <span>Weekend in-store discount campaign</span>
+                <strong>Yesterday</strong>
+              </div>
+              <div class="list-row">
+                <span>New video post from the showroom</span>
+                <strong>3 days ago</strong>
+              </div>
+            </div>
+            <div class="subpanel">
+              <h3>Top products</h3>
+              <div class="list-row"><span>Oslo Sofa Set</span><strong>$1,499</strong></div>
+              <div class="list-row"><span>Nova Dining Table</span><strong>$799</strong></div>
+              <div class="list-row"><span>Softline Bedroom Set</span><strong>$2,199</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Search and discovery page</h2>
+            <p>Visitors use category filters, ratings, distance, and keywords to discover businesses without creating an account.</p>
+          </div>
+        </div>
+
+        <div class="search-layout">
+          <aside class="search-card">
+            <h3>Filters</h3>
+            <div class="filter-stack" style="margin-top: 14px;">
+              <div class="filter-box">
+                <strong>Category</strong>
+                <p>Restaurants, Furniture, Education, Health, Services</p>
+              </div>
+              <div class="filter-box">
+                <strong>Location</strong>
+                <p>City, neighborhood, postal radius</p>
+              </div>
+              <div class="filter-box">
+                <strong>Rating</strong>
+                <p>4.0+, 4.5+, 5.0</p>
+              </div>
+              <div class="filter-box">
+                <strong>Price / Availability</strong>
+                <p>Budget, premium, open now, featured</p>
+              </div>
+            </div>
+          </aside>
+
+          <div class="search-card">
+            <h3>Search results</h3>
+            <div class="result-stack" style="margin-top: 14px;">
+              <div class="result-card">
+                <div class="result-logo">BB</div>
+                <div>
+                  <strong>Blue Bowl Bistro</strong>
+                  <p>Popular restaurant with daily lunch posts, customer reviews, and booking options.</p>
+                </div>
+                <div class="tiny-row">
+                  <span class="tag">★ 4.7</span>
+                  <span class="tag">1.8 km</span>
+                </div>
+              </div>
+              <div class="result-card">
+                <div class="result-logo">TF</div>
+                <div>
+                  <strong>Tulip Furniture</strong>
+                  <p>Product-focused store page with weekly offers, in-stock listings, and showroom details.</p>
+                </div>
+                <div class="tiny-row">
+                  <span class="tag">★ 4.8</span>
+                  <span class="tag">3.4 km</span>
+                </div>
+              </div>
+              <div class="result-card">
+                <div class="result-logo">GS</div>
+                <div>
+                  <strong>Global Study Centre</strong>
+                  <p>Education page with program cards, announcements, reviews, and admission contact buttons.</p>
+                </div>
+                <div class="tiny-row">
+                  <span class="tag">★ 4.9</span>
+                  <span class="tag">5.1 km</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Trending posts</h2>
+            <p>Posts work like a business-first social feed: promotions, announcements, video updates, and campaign highlights.</p>
+          </div>
+        </div>
+
+        <div class="post-grid">
+          <article class="post-card">
+            <div class="post-media">Campaign Visual</div>
+            <div class="post-body">
+              <h3>Weekend dining deal</h3>
+              <p>Blue Bowl Bistro promotes a limited-time offer with booking and call-to-action buttons.</p>
+              <div class="meta-row">
+                <span class="tag">Restaurant</span>
+                <span class="tag">Promo</span>
+                <span class="tag">1.2K views</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="post-card">
+            <div class="post-media">Product Launch</div>
+            <div class="post-body">
+              <h3>New furniture collection</h3>
+              <p>Tulip Furniture posts a new collection preview linked to the product catalog inside the page.</p>
+              <div class="meta-row">
+                <span class="tag">Furniture</span>
+                <span class="tag">Launch</span>
+                <span class="tag">940 clicks</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="post-card">
+            <div class="post-media">Enrollment Update</div>
+            <div class="post-body">
+              <h3>Spring intake announcement</h3>
+              <p>An education center shares intake dates, open-house reminders, and registration guidance.</p>
+              <div class="meta-row">
+                <span class="tag">Education</span>
+                <span class="tag">News</span>
+                <span class="tag">780 saves</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Business dashboard preview</h2>
+            <p>Only businesses have accounts. They manage pages, create posts, track views, boost content, and update products from one dashboard.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-shell">
+          <aside class="sidebar">
+            <div class="item active">Dashboard</div>
+            <div class="item">My Profile</div>
+            <div class="item">Posts</div>
+            <div class="item">Products</div>
+            <div class="item">Reviews</div>
+            <div class="item">Ads</div>
+            <div class="item">Settings</div>
+          </aside>
+
+          <div class="dashboard-card">
+            <div class="metric-grid">
+              <div class="metric">
+                <p>Total Views</p>
+                <h3>18,240</h3>
+                <span class="muted">+12% this week</span>
+              </div>
+              <div class="metric">
+                <p>Clicks</p>
+                <h3>3,182</h3>
+                <span class="muted">Profile and CTA clicks</span>
+              </div>
+              <div class="metric">
+                <p>Messages</p>
+                <h3>146</h3>
+                <span class="muted">Visitor inquiries</span>
+              </div>
+              <div class="metric">
+                <p>Conversions</p>
+                <h3>62</h3>
+                <span class="muted">Bookings or leads</span>
+              </div>
+            </div>
+
+            <div class="dashboard-grid" style="margin-top: 18px;">
+              <div class="widget">
+                <h3>Quick actions</h3>
+                <div class="widget-list">
+                  <div class="widget-row"><span>Create a new post</span><strong>Open</strong></div>
+                  <div class="widget-row"><span>Add product or service</span><strong>Open</strong></div>
+                  <div class="widget-row"><span>Boost campaign</span><strong>Open</strong></div>
+                  <div class="widget-row"><span>Update business hours</span><strong>Open</strong></div>
+                </div>
+              </div>
+
+              <div class="widget">
+                <h3>Latest performance</h3>
+                <div class="widget-list">
+                  <div class="widget-row"><span>Weekend Sale post</span><strong>1.4K views</strong></div>
+                  <div class="widget-row"><span>Dining Set product card</span><strong>320 clicks</strong></div>
+                  <div class="widget-row"><span>Profile overview</span><strong>4m avg stay</strong></div>
+                  <div class="widget-row"><span>Ads campaign</span><strong>22 leads</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Pricing model</h2>
+            <p>The platform can start free for visibility and grow through premium exposure, analytics, and ad tools.</p>
+          </div>
+        </div>
+
+        <div class="pricing-grid">
+          <div class="plan-card">
+            <div>
+              <h3>Free</h3>
+              <p>For businesses that want a basic public page.</p>
+            </div>
+            <div class="price">$0</div>
+            <div class="feature-list">
+              <span>Business profile</span>
+              <span>Basic posts</span>
+              <span>Contact information</span>
+              <span>Category listing</span>
+            </div>
+            <span class="ghost-btn">Current Plan</span>
+          </div>
+
+          <div class="plan-card featured">
+            <div>
+              <h3>Pro</h3>
+              <p>For businesses that want stronger visibility and insights.</p>
+            </div>
+            <div class="price">$29</div>
+            <div class="feature-list">
+              <span>Everything in Free</span>
+              <span>Featured placement</span>
+              <span>Extended analytics</span>
+              <span>Priority support</span>
+            </div>
+            <span class="primary-btn">Most Popular</span>
+          </div>
+
+          <div class="plan-card">
+            <div>
+              <h3>Premium</h3>
+              <p>For businesses that want campaign tools and lead growth.</p>
+            </div>
+            <div class="price">$79</div>
+            <div class="feature-list">
+              <span>Everything in Pro</span>
+              <span>Ads manager</span>
+              <span>CRM-style lead tools</span>
+              <span>Multi-location support</span>
+            </div>
+            <span class="ghost-btn">Upgrade</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-box">
+        <div>
+          <strong>Datominds Network</strong>
+          <p>A homepage mockup for a business-only social platform where every member is an institution, not an individual.</p>
+        </div>
+        <div class="meta-row">
+          <span class="tag">Static demo</span>
+          <span class="tag">No links active</span>
+          <span class="tag">Single file index.html</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

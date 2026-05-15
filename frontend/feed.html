@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feed · Datominds Network</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0f14; --surface: #161a22; --surface2: #1d2230; --surface3: #222840;
+      --border: #252c3a; --text: #e8eaf0; --muted: #6b7491; --muted2: #4a5270;
+      --accent: #4f8ef7; --accent-dim: rgba(79,142,247,0.12);
+      --success: #34d399; --danger: #f87171; --warn: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* TOPBAR */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,15,20,0.92); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: 1140px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: 11px; background: var(--accent);
+      display: grid; place-items: center; font-family: 'DM Serif Display', serif; color: white; font-size: 1rem;
+    }
+    .brand-name { font-weight: 600; font-size: 0.95rem; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-links a, .nav-btn {
+      padding: 8px 14px; border-radius: 999px; font-size: 0.88rem;
+      text-decoration: none; color: var(--muted); font-weight: 500; transition: color 0.2s;
+      border: none; background: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    }
+    .nav-links a:hover, .nav-btn:hover { color: var(--text); }
+    .nav-links a.active { color: var(--accent); }
+    .auth-area { display: flex; align-items: center; gap: 8px; }
+    .btn-sm {
+      padding: 8px 16px; border-radius: 999px; font-size: 0.88rem;
+      font-weight: 600; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'DM Sans', sans-serif; transition: opacity 0.2s; border: none;
+    }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-sm:hover { opacity: 0.82; }
+
+    /* LAYOUT */
+    .layout {
+      max-width: 1140px; margin: 0 auto;
+      display: grid; grid-template-columns: 240px 1fr 280px;
+      gap: 24px; padding: 28px 20px;
+    }
+
+    /* SIDEBAR LEFT */
+    .sidebar-left { position: sticky; top: 80px; align-self: start; display: grid; gap: 12px; }
+    .sidebar-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 18px;
+    }
+    .sidebar-card h3 { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 12px;
+      font-size: 0.9rem; font-weight: 500; color: var(--muted);
+      cursor: pointer; transition: all 0.15s; text-decoration: none;
+      border: none; background: none; font-family: 'DM Sans', sans-serif; width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: var(--accent-dim); color: var(--accent); }
+    .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    /* FEED */
+    .feed { display: grid; gap: 16px; }
+
+    /* COMPOSE BOX */
+    .compose {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 18px; display: none;
+    }
+    .compose.visible { display: block; }
+    .compose-top { display: flex; gap: 12px; align-items: flex-start; }
+    .avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--accent); display: grid; place-items: center;
+      font-weight: 700; font-size: 0.9rem; color: white; flex-shrink: 0;
+    }
+    .compose textarea {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px; font-size: 0.95rem; color: var(--text);
+      font-family: 'DM Sans', sans-serif; resize: none; min-height: 90px; transition: border-color 0.2s;
+    }
+    .compose textarea:focus { outline: none; border-color: var(--accent); }
+    .compose-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .compose-hint { font-size: 0.82rem; color: var(--muted); }
+    .tag-input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 0.85rem; color: var(--text); font-family: 'DM Sans', sans-serif; width: 200px; }
+    .tag-input:focus { outline: none; border-color: var(--accent); }
+    .post-btn {
+      padding: 9px 20px; border-radius: 999px; border: none;
+      background: var(--accent); color: white; font-weight: 600;
+      font-size: 0.88rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .post-btn:hover { opacity: 0.85; }
+    .post-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* POST CARD */
+    .post {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; overflow: hidden; transition: border-color 0.2s;
+    }
+    .post:hover { border-color: var(--muted2); }
+    .post-header { padding: 18px 18px 0; display: flex; align-items: center; gap: 12px; }
+    .post-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      display: grid; place-items: center; font-weight: 700; color: white;
+      font-size: 0.95rem; flex-shrink: 0; text-decoration: none;
+    }
+    .post-avatar.individual { background: linear-gradient(135deg, #34d399, #059669); }
+    .post-meta { flex: 1; min-width: 0; }
+    .post-author { font-weight: 600; font-size: 0.95rem; }
+    .post-author a { color: var(--text); text-decoration: none; }
+    .post-author a:hover { color: var(--accent); }
+    .post-time { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .post-type-badge {
+      font-size: 0.75rem; padding: 3px 9px; border-radius: 999px;
+      background: var(--surface2); color: var(--muted); border: 1px solid var(--border);
+    }
+    .post-body { padding: 14px 18px; }
+    .post-content { font-size: 0.95rem; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+    .post-image { width: 100%; max-height: 380px; object-fit: cover; border-radius: 12px; margin-top: 12px; }
+    .shared-post {
+      margin-top: 12px; padding: 14px; border-radius: 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+    }
+    .shared-post .shared-from { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+    .shared-post .shared-from a { color: var(--accent); text-decoration: none; }
+    .shared-post .shared-content { font-size: 0.9rem; color: var(--text); }
+    .post-tags { padding: 4px 18px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag-chip {
+      font-size: 0.8rem; padding: 3px 10px; border-radius: 999px;
+      background: var(--accent-dim); color: var(--accent); text-decoration: none;
+    }
+    .tag-chip:hover { background: rgba(79,142,247,0.2); }
+    .post-actions {
+      padding: 12px 18px; display: flex; align-items: center; gap: 4px;
+      border-top: 1px solid var(--border);
+    }
+    .action-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 12px; border-radius: 999px; border: none;
+      background: none; color: var(--muted); font-size: 0.85rem;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    }
+    .action-btn:hover { background: var(--surface2); color: var(--text); }
+    .action-btn.liked { color: var(--danger); }
+    .action-btn.liked:hover { background: rgba(248,113,113,0.1); }
+    .action-btn .count { font-weight: 600; }
+    .action-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+
+    /* COMMENTS */
+    .comments-box { border-top: 1px solid var(--border); padding: 14px 18px; display: none; }
+    .comments-box.open { display: block; }
+    .comment-list { display: grid; gap: 10px; margin-bottom: 14px; }
+    .comment {
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .comment-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      display: grid; place-items: center; font-size: 0.75rem;
+      font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .comment-avatar.individual { background: linear-gradient(135deg, #34d399, #059669); }
+    .comment-bubble {
+      background: var(--surface2); border-radius: 12px;
+      padding: 9px 12px; flex: 1;
+    }
+    .comment-name { font-size: 0.82rem; font-weight: 600; margin-bottom: 3px; }
+    .comment-name a { color: var(--text); text-decoration: none; }
+    .comment-name a:hover { color: var(--accent); }
+    .comment-text { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+    .comment-time { font-size: 0.76rem; color: var(--muted); margin-top: 4px; }
+    .comment-input-row { display: flex; gap: 10px; align-items: flex-start; }
+    .comment-input {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 9px 12px; font-size: 0.88rem;
+      color: var(--text); font-family: 'DM Sans', sans-serif; resize: none; min-height: 42px;
+      transition: border-color 0.2s;
+    }
+    .comment-input:focus { outline: none; border-color: var(--accent); }
+    .comment-send {
+      padding: 9px 16px; border-radius: 12px; border: none;
+      background: var(--accent); color: white; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    }
+
+    /* SHARE MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: none; place-items: center; z-index: 200;
+    }
+    .modal-overlay.open { display: grid; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 28px; width: 90%; max-width: 480px;
+    }
+    .modal h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 16px; }
+    .modal .original-preview {
+      background: var(--surface2); border-radius: 12px; padding: 14px;
+      margin-bottom: 16px; font-size: 0.88rem; color: var(--muted);
+    }
+    .modal .original-preview strong { display: block; color: var(--text); margin-bottom: 6px; font-size: 0.85rem; }
+    .modal textarea {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px; font-size: 0.92rem; color: var(--text);
+      font-family: 'DM Sans', sans-serif; resize: none; min-height: 100px;
+    }
+    .modal textarea:focus { outline: none; border-color: var(--accent); }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+    .btn-cancel {
+      padding: 9px 18px; border-radius: 999px; border: 1px solid var(--border);
+      background: var(--surface2); color: var(--muted); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    }
+    .btn-share-confirm {
+      padding: 9px 20px; border-radius: 999px; border: none;
+      background: var(--accent); color: white; font-weight: 600;
+      font-size: 0.88rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    }
+
+    /* SIDEBAR RIGHT */
+    .sidebar-right { position: sticky; top: 80px; align-self: start; display: grid; gap: 12px; }
+    .widget {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 18px;
+    }
+    .widget h3 { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .business-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid var(--border); text-decoration: none;
+    }
+    .business-item:last-child { border-bottom: none; }
+    .b-avatar {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      display: grid; place-items: center; font-weight: 700;
+      color: white; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .b-name { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+    .b-cat { font-size: 0.78rem; color: var(--muted); }
+
+    /* GUEST BANNER */
+    .guest-banner {
+      background: linear-gradient(135deg, var(--accent-dim), rgba(99,102,241,0.08));
+      border: 1px solid rgba(79,142,247,0.2); border-radius: 18px; padding: 22px;
+      text-align: center;
+    }
+    .guest-banner h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 8px; }
+    .guest-banner p { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; }
+    .guest-banner .actions { display: flex; flex-direction: column; gap: 8px; }
+    .guest-banner a {
+      display: block; padding: 10px; border-radius: 12px; text-align: center;
+      font-size: 0.88rem; font-weight: 600; text-decoration: none; transition: opacity 0.2s;
+    }
+    .guest-banner a:hover { opacity: 0.82; }
+    .guest-banner .a-primary { background: var(--accent); color: white; }
+    .guest-banner .a-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+    /* LOADING */
+    .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 0.9rem; }
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 8px; color: var(--text); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 12px 20px; font-size: 0.88rem; font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); transition: transform 0.3s; z-index: 300;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar-left, .sidebar-right { position: static; }
+    }
+    @media (max-width: 640px) {
+      .topbar-inner { padding: 12px 16px; }
+      .nav-links { display: none; }
+      .layout { padding: 16px; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand">
+      <div class="brand-mark">D</div>
+      <span class="brand-name">Datominds</span>
+    </a>
+    <nav class="nav-links">
+      <a href="feed.html" class="active">Feed</a>
+      <a href="index.html#search">Explore</a>
+    </nav>
+    <div class="auth-area" id="authArea">
+      <!-- JS ile doldurulur -->
+    </div>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left" id="leftSidebar">
+    <div class="sidebar-card">
+      <h3>Navigation</h3>
+      <a class="nav-item active" href="feed.html"><span class="icon">🏠</span> Feed</a>
+      <a class="nav-item" href="index.html"><span class="icon">🔍</span> Explore</a>
+      <a class="nav-item" id="profileNavLink" href="#"><span class="icon">👤</span> Profile</a>
+      <button class="nav-item" id="notifBtn"><span class="icon">🔔</span> Notifications <span id="notifBadge"></span></button>
+    </div>
+  </aside>
+
+  <!-- MAIN FEED -->
+  <main>
+    <!-- COMPOSE (only business) -->
+    <div class="compose" id="composeBox">
+      <div class="compose-top">
+        <div class="avatar" id="composeAvatar">B</div>
+        <textarea id="composeText" placeholder="Share something with your followers... Use @slug to tag other businesses."></textarea>
+      </div>
+      <div class="compose-footer">
+        <div>
+          <input class="tag-input" id="tagInput" placeholder="@business-slug (optional)" />
+        </div>
+        <button class="post-btn" id="postBtn" onclick="submitPost()">Post</button>
+      </div>
+    </div>
+
+    <!-- FEED POSTS -->
+    <div class="feed" id="feedContainer">
+      <div class="loading">Loading feed...</div>
+    </div>
+
+    <div id="loadMoreContainer" style="text-align:center;padding:20px;display:none;">
+      <button class="btn-sm btn-ghost" onclick="loadMore()">Load more</button>
+    </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right">
+    <div id="rightSidebarContent">
+      <!-- JS ile doldurulur -->
+    </div>
+  </aside>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <h3>Share this post</h3>
+    <div class="original-preview" id="sharePreview"></div>
+    <textarea id="shareComment" placeholder="Add your thoughts... (optional)"></textarea>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeShare()">Cancel</button>
+      <button class="btn-share-confirm" onclick="confirmShare()">Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "https://datominds-backend.onrender.com";
+let session = null;
+let page = 1;
+let hasMore = false;
+let shareTargetId = null;
+
+// ── AUTH ──────────────────────────────────────────────────
+
+function getToken() { return localStorage.getItem("dn_token"); }
+function getUser() {
+  try { return JSON.parse(localStorage.getItem("dn_user")); } catch { return null; }
+}
+function getBusiness() {
+  try { return JSON.parse(localStorage.getItem("dn_business")); } catch { return null; }
+}
+
+function isBusiness() {
+  const u = getUser();
+  return u && u.role === "business_owner";
+}
+
+function authHeaders() {
+  const t = getToken();
+  return t ? { "Authorization": "Bearer " + t, "Content-Type": "application/json" } : { "Content-Type": "application/json" };
+}
+
+async function verifySession() {
+  const token = getToken();
+  if (!token) return false;
+  try {
+    const res = await fetch(`${API}/api/auth/me`, { headers: { "Authorization": "Bearer " + token } });
+    const data = await res.json();
+    if (data.success) {
+      session = data;
+      return true;
+    }
+  } catch {}
+  localStorage.removeItem("dn_token");
+  localStorage.removeItem("dn_user");
+  localStorage.removeItem("dn_business");
+  return false;
+}
+
+// ── UI SETUP ─────────────────────────────────────────────
+
+function setupUI() {
+  const user = getUser();
+  const business = getBusiness();
+  const authArea = document.getElementById("authArea");
+
+  if (user) {
+    const name = business ? business.business_name : `${user.first_name} ${user.last_name}`;
+    const initial = name.charAt(0).toUpperCase();
+    authArea.innerHTML = `
+      <a href="${user.role === "business_owner" ? `business.html?slug=${business?.slug}` : `profile.html?id=${user.id}`}" class="btn-sm btn-ghost">${initial} ${name}</a>
+      <button class="btn-sm btn-ghost" onclick="doLogout()">Sign out</button>
+    `;
+
+    // Profile nav link
+    const profileLink = document.getElementById("profileNavLink");
+    if (user.role === "business_owner" && business) {
+      profileLink.href = `business.html?slug=${business.slug}`;
+    } else {
+      profileLink.href = `profile.html?id=${user.id}`;
+    }
+
+    // Compose box — sadece business
+    if (user.role === "business_owner" && business) {
+      const composeBox = document.getElementById("composeBox");
+      composeBox.classList.add("visible");
+      document.getElementById("composeAvatar").textContent = business.business_name.charAt(0).toUpperCase();
+    }
+
+    // Right sidebar - following widget
+    renderFollowingWidget();
+
+    // Notifications badge
+    loadNotifCount();
+  } else {
+    authArea.innerHTML = `
+      <a href="login.html" class="btn-sm btn-ghost">Sign in</a>
+      <a href="register.html" class="btn-sm btn-primary">Join</a>
+    `;
+    document.getElementById("profileNavLink").style.display = "none";
+    renderGuestSidebar();
+  }
+}
+
+function renderGuestSidebar() {
+  document.getElementById("rightSidebarContent").innerHTML = `
+    <div class="guest-banner">
+      <h3>Join Datominds</h3>
+      <p>Follow businesses, like and comment on posts, and share what you discover.</p>
+      <div class="actions">
+        <a href="register.html" class="a-primary">Create account</a>
+        <a href="login.html" class="a-ghost">Sign in</a>
+      </div>
+    </div>
+  `;
+}
+
+async function renderFollowingWidget() {
+  const token = getToken();
+  const user = getUser();
+  if (!token || !user) return;
+
+  document.getElementById("rightSidebarContent").innerHTML = `<div class="widget"><div class="loading" style="padding:20px;">Loading...</div></div>`;
+
+  try {
+    // Kullanıcının takip ettiği business'lar (profile endpoint'ten)
+    const res = await fetch(`${API}/api/profile/${user.id}`, { headers: authHeaders() });
+    const data = await res.json();
+    if (!data.success) return;
+
+    const following = data.following || [];
+    const html = following.length > 0
+      ? following.slice(0, 6).map(b => `
+          <a class="business-item" href="business.html?slug=${b.slug}">
+            <div class="b-avatar">${b.business_name.charAt(0)}</div>
+            <div>
+              <div class="b-name">${escHtml(b.business_name)}</div>
+              <div class="b-cat">${escHtml(b.category_name || "")}</div>
+            </div>
+          </a>`).join("")
+      : `<p style="font-size:0.85rem;color:var(--muted);">You're not following any businesses yet. <a href="index.html" style="color:var(--accent);text-decoration:none;">Explore</a></p>`;
+
+    document.getElementById("rightSidebarContent").innerHTML = `
+      <div class="widget">
+        <h3>Following</h3>
+        ${html}
+        ${following.length > 6 ? `<a href="profile.html?id=${user.id}" style="font-size:0.82rem;color:var(--accent);text-decoration:none;display:block;margin-top:10px;">See all →</a>` : ""}
+      </div>
+    `;
+  } catch {}
+}
+
+async function loadNotifCount() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/api/notifications`, { headers: authHeaders() });
+    const data = await res.json();
+    if (data.unread_count > 0) {
+      document.getElementById("notifBadge").textContent = data.unread_count;
+      document.getElementById("notifBadge").style.cssText = "background:var(--danger);color:white;border-radius:999px;padding:1px 7px;font-size:0.75rem;font-weight:700;margin-left:4px;";
+    }
+  } catch {}
+}
+
+async function doLogout() {
+  const token = getToken();
+  if (token) {
+    await fetch(`${API}/api/auth/logout`, { method: "POST", headers: { "Authorization": "Bearer " + token } });
+  }
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+// ── FEED ─────────────────────────────────────────────────
+
+async function loadFeed(reset = false) {
+  if (reset) { page = 1; document.getElementById("feedContainer").innerHTML = '<div class="loading">Loading...</div>'; }
+  const token = getToken();
+  const headers = token ? { "Authorization": "Bearer " + token } : {};
+
+  try {
+    const res = await fetch(`${API}/api/feed?page=${page}`, { headers });
+    const data = await res.json();
+
+    if (!data.success) { document.getElementById("feedContainer").innerHTML = '<div class="loading">Could not load feed.</div>'; return; }
+
+    hasMore = data.has_more;
+    const posts = data.posts;
+
+    if (reset && posts.length === 0) {
+      document.getElementById("feedContainer").innerHTML = `
+        <div class="empty">
+          <h3>No posts yet</h3>
+          <p>Follow some businesses to see their posts here, or <a href="index.html" style="color:var(--accent);text-decoration:none;">explore</a> to discover new ones.</p>
+        </div>`;
+      return;
+    }
+
+    const html = posts.map(renderPost).join("");
+    if (reset) {
+      document.getElementById("feedContainer").innerHTML = html;
+    } else {
+      document.getElementById("feedContainer").insertAdjacentHTML("beforeend", html);
+    }
+
+    document.getElementById("loadMoreContainer").style.display = hasMore ? "block" : "none";
+  } catch (e) {
+    document.getElementById("feedContainer").innerHTML = '<div class="loading">Connection error.</div>';
+  }
+}
+
+function loadMore() {
+  page++;
+  loadFeed(false);
+}
+
+// ── POST RENDERING ────────────────────────────────────────
+
+function renderPost(p) {
+  const isShare = p.post_type === "share";
+  const isBiz = p.author_type === "business";
+
+  const authorName = isBiz
+    ? escHtml(p.business_name)
+    : escHtml(`${p.first_name} ${p.last_name}`);
+  const authorLink = isBiz
+    ? `business.html?slug=${p.business_slug}`
+    : `profile.html?id=${p.user_id}`;
+  const authorInitial = authorName.charAt(0).toUpperCase();
+  const avatarClass = isBiz ? "post-avatar" : "post-avatar individual";
+
+  const sharedBlock = isShare && p.original_post ? `
+    <div class="shared-post">
+      <div class="shared-from">
+        Originally posted by <a href="business.html?slug=${p.original_post.business_slug}">${escHtml(p.original_post.business_name)}</a>
+      </div>
+      <div class="shared-content">${escHtml(p.original_post.content).substring(0, 200)}${p.original_post.content.length > 200 ? "…" : ""}</div>
+    </div>` : "";
+
+  const imageBlock = p.image_url ? `<img class="post-image" src="${escHtml(p.image_url)}" alt="" loading="lazy" />` : "";
+
+  const likedClass = p.is_liked ? "action-btn liked" : "action-btn";
+  const likedIcon = p.is_liked ? "❤️" : "🤍";
+
+  const user = getUser();
+  const canInteract = !!user;
+  const canShare = !!user;
+
+  const actionsHtml = canInteract
+    ? `<button class="${likedClass}" id="like-${p.id}" onclick="toggleLike(${p.id})">
+        ${likedIcon} <span class="count" id="like-count-${p.id}">${p.like_count}</span>
+       </button>
+       <div class="action-sep"></div>
+       <button class="action-btn" onclick="toggleComments(${p.id})">
+        💬 <span class="count">${p.comment_count}</span>
+       </button>
+       <div class="action-sep"></div>
+       ${canShare ? `<button class="action-btn" onclick="openShare(${p.id}, '${escAttr(authorName)}', '${escAttr((p.content || "").substring(0, 80))}')">
+        🔁 <span class="count">${p.share_count}</span>
+       </button>` : ""}
+      `
+    : `<span class="action-btn" style="cursor:default;">🤍 ${p.like_count}</span>
+       <div class="action-sep"></div>
+       <span class="action-btn" style="cursor:default;">💬 ${p.comment_count}</span>
+       <div class="action-sep"></div>
+       <a href="login.html" class="action-btn" style="text-decoration:none;">Sign in to interact</a>`;
+
+  return `
+    <article class="post" id="post-${p.id}">
+      <div class="post-header">
+        <a href="${authorLink}" class="${avatarClass}">${authorInitial}</a>
+        <div class="post-meta">
+          <div class="post-author"><a href="${authorLink}">${authorName}</a></div>
+          <div class="post-time">${timeAgo(p.created_at)}${isShare ? " · shared a post" : ""}</div>
+        </div>
+        ${isShare ? '<span class="post-type-badge">🔁 Share</span>' : ""}
+      </div>
+      <div class="post-body">
+        <div class="post-content">${escHtml(p.content || "")}</div>
+        ${imageBlock}
+        ${sharedBlock}
+      </div>
+      <div class="post-actions">${actionsHtml}</div>
+      <div class="comments-box" id="comments-${p.id}">
+        <div class="comment-list" id="comment-list-${p.id}"></div>
+        ${canInteract ? `
+        <div class="comment-input-row">
+          <textarea class="comment-input" id="comment-input-${p.id}" placeholder="Write a comment..." rows="1"></textarea>
+          <button class="comment-send" onclick="submitComment(${p.id})">Send</button>
+        </div>` : `<a href="login.html" style="font-size:0.85rem;color:var(--accent);text-decoration:none;">Sign in to comment</a>`}
+      </div>
+    </article>`;
+}
+
+// ── LIKE ─────────────────────────────────────────────────
+
+async function toggleLike(postId) {
+  const user = getUser();
+  if (!user) { window.location.href = "login.html"; return; }
+
+  const btn = document.getElementById(`like-${postId}`);
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API}/api/posts/${postId}/like`, {
+      method: "POST", headers: authHeaders()
+    });
+    const data = await res.json();
+    if (data.success) {
+      btn.className = data.liked ? "action-btn liked" : "action-btn";
+      btn.querySelector(".count").textContent = data.like_count;
+      btn.innerHTML = (data.liked ? "❤️" : "🤍") + ` <span class="count">${data.like_count}</span>`;
+    }
+  } catch {}
+  btn.disabled = false;
+}
+
+// ── COMMENTS ─────────────────────────────────────────────
+
+async function toggleComments(postId) {
+  const box = document.getElementById(`comments-${postId}`);
+  if (box.classList.contains("open")) {
+    box.classList.remove("open"); return;
+  }
+  box.classList.add("open");
+  await loadComments(postId);
+}
+
+async function loadComments(postId) {
+  const list = document.getElementById(`comment-list-${postId}`);
+  list.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;">Loading...</div>';
+  try {
+    const res = await fetch(`${API}/api/posts/${postId}/comments`);
+    const data = await res.json();
+    if (!data.success) return;
+    if (data.comments.length === 0) {
+      list.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:4px 0;">No comments yet. Be the first!</div>';
+      return;
+    }
+    list.innerHTML = data.comments.map(c => {
+      const isBiz = c.commenter_type === "business";
+      const name = isBiz ? escHtml(c.business_name) : escHtml(`${c.first_name} ${c.last_name}`);
+      const link = isBiz ? `business.html?slug=${c.business_slug}` : `#`;
+      const initial = name.charAt(0).toUpperCase();
+      return `
+        <div class="comment">
+          <div class="comment-avatar ${isBiz ? "" : "individual"}">${initial}</div>
+          <div class="comment-bubble">
+            <div class="comment-name"><a href="${link}">${name}</a></div>
+            <div class="comment-text">${escHtml(c.content)}</div>
+            <div class="comment-time">${timeAgo(c.created_at)}</div>
+          </div>
+        </div>`;
+    }).join("");
+  } catch { list.innerHTML = ""; }
+}
+
+async function submitComment(postId) {
+  const input = document.getElementById(`comment-input-${postId}`);
+  const content = input.value.trim();
+  if (!content) return;
+
+  try {
+    const res = await fetch(`${API}/api/posts/${postId}/comments`, {
+      method: "POST", headers: authHeaders(),
+      body: JSON.stringify({ content })
+    });
+    const data = await res.json();
+    if (data.success) {
+      input.value = "";
+      await loadComments(postId);
+    } else {
+      showToast(data.error || "Failed to post comment.");
+    }
+  } catch {}
+}
+
+// ── POST COMPOSE ──────────────────────────────────────────
+
+async function submitPost() {
+  const content = document.getElementById("composeText").value.trim();
+  if (!content) return;
+
+  const tagRaw = document.getElementById("tagInput").value.trim();
+  const tagged_businesses = tagRaw
+    ? tagRaw.split(",").map(s => s.trim().replace(/^@/, "")).filter(Boolean)
+    : [];
+
+  const btn = document.getElementById("postBtn");
+  btn.disabled = true; btn.textContent = "Posting...";
+
+  try {
+    const res = await fetch(`${API}/api/posts`, {
+      method: "POST", headers: authHeaders(),
+      body: JSON.stringify({ content, tagged_businesses })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById("composeText").value = "";
+      document.getElementById("tagInput").value = "";
+      showToast("Post published!");
+      await loadFeed(true);
+    } else {
+      showToast(data.error || "Failed to post.");
+    }
+  } catch (e) {
+    showToast("Connection error.");
+  }
+  btn.disabled = false; btn.textContent = "Post";
+}
+
+// ── SHARE ─────────────────────────────────────────────────
+
+function openShare(postId, authorName, preview) {
+  const user = getUser();
+  if (!user) { window.location.href = "login.html"; return; }
+  shareTargetId = postId;
+  document.getElementById("sharePreview").innerHTML = `<strong>${escHtml(authorName)}</strong>${escHtml(preview)}${preview.length >= 80 ? "…" : ""}`;
+  document.getElementById("shareComment").value = "";
+  document.getElementById("shareModal").classList.add("open");
+}
+
+function closeShare() {
+  document.getElementById("shareModal").classList.remove("open");
+  shareTargetId = null;
+}
+
+async function confirmShare() {
+  if (!shareTargetId) return;
+  const content = document.getElementById("shareComment").value.trim();
+  try {
+    const res = await fetch(`${API}/api/posts/${shareTargetId}/share`, {
+      method: "POST", headers: authHeaders(),
+      body: JSON.stringify({ content })
+    });
+    const data = await res.json();
+    closeShare();
+    if (data.success) {
+      showToast("Shared successfully!");
+      await loadFeed(true);
+    } else {
+      showToast(data.error || "Share failed.");
+    }
+  } catch {}
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+
+function escHtml(s) {
+  if (!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function escAttr(s) {
+  if (!s) return "";
+  return String(s).replace(/'/g, "\\'").replace(/"/g, "&quot;");
+}
+function timeAgo(dateStr) {
+  const d = new Date(dateStr);
+  const diff = (Date.now() - d.getTime()) / 1000;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return Math.floor(diff/60) + "m ago";
+  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+  if (diff < 604800) return Math.floor(diff/86400) + "d ago";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+// ── INIT ──────────────────────────────────────────────────
+
+(async () => {
+  setupUI();
+  await loadFeed(true);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login · Datominds Network</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #161a22;
+      --surface2: #1d2230;
+      --border: #252c3a;
+      --text: #e8eaf0;
+      --muted: #6b7491;
+      --accent: #4f8ef7;
+      --accent-dim: rgba(79,142,247,0.12);
+      --success: #34d399;
+      --danger: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(79,142,247,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      position: relative;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .brand-mark {
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      background: var(--accent);
+      display: grid; place-items: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: white;
+    }
+    .brand-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+    .tabs {
+      display: flex;
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 24px;
+      gap: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 9px;
+      border-radius: 9px;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: 0.83rem; font-weight: 500; color: var(--muted); margin-bottom: 7px; }
+    input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: var(--accent); }
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .msg {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      display: none;
+    }
+    .msg.error { display: block; background: rgba(248,113,113,0.1); color: var(--danger); border: 1px solid rgba(248,113,113,0.2); }
+    .msg.success { display: block; background: rgba(52,211,153,0.1); color: var(--success); border: 1px solid rgba(52,211,153,0.2); }
+    .footer-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .footer-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+    .register-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .register-btn {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .register-btn:hover { border-color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+      <div class="brand-mark">D</div>
+      <span class="brand-name">Datominds Network</span>
+    </div>
+
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to your account to continue.</p>
+
+    <div class="tabs">
+      <div class="tab active" onclick="setTab('individual')">Individual</div>
+      <div class="tab" onclick="setTab('business')">Business</div>
+    </div>
+
+    <div class="field">
+      <label>Email address</label>
+      <input id="email" type="email" placeholder="you@example.com" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="password" type="password" placeholder="••••••••" />
+    </div>
+
+    <button class="btn" id="loginBtn" onclick="doLogin()">Sign in</button>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="divider"></div>
+
+    <div class="footer-link">Don't have an account?</div>
+    <div class="register-links">
+      <a class="register-btn" href="register.html">Register as Individual</a>
+      <a class="register-btn" href="create-business.html">Register as Business</a>
+    </div>
+
+    <div class="footer-link" style="margin-top:16px;">
+      <a href="index.html">← Back to home</a>
+    </div>
+  </div>
+
+  <script>
+    const API = "https://datominds-backend.onrender.com";
+    let activeTab = "individual";
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll(".tab").forEach((t, i) => {
+        t.classList.toggle("active", (i === 0 && tab === "individual") || (i === 1 && tab === "business"));
+      });
+    }
+
+    async function doLogin() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const btn = document.getElementById("loginBtn");
+      const msg = document.getElementById("msg");
+
+      if (!email || !password) { showMsg("Please fill in all fields.", "error"); return; }
+
+      btn.disabled = true;
+      btn.textContent = "Signing in...";
+      msg.className = "msg";
+
+      try {
+        const res = await fetch(`${API}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          showMsg(data.error || "Login failed.", "error");
+        } else {
+          localStorage.setItem("dn_token", data.token);
+          localStorage.setItem("dn_user", JSON.stringify(data.user));
+          if (data.business) localStorage.setItem("dn_business", JSON.stringify(data.business));
+          showMsg("Redirecting...", "success");
+          setTimeout(() => { window.location.href = "feed.html"; }, 600);
+        }
+      } catch (e) {
+        showMsg("Connection failed: " + e.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Sign in";
+      }
+    }
+
+    function showMsg(text, type) {
+      const msg = document.getElementById("msg");
+      msg.className = "msg " + type;
+      msg.textContent = text;
+    }
+
+    document.addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+  </script>
+</body>
+</html>
