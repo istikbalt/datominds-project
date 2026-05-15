@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Business · Diwanet</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#f5f7f2; --surface:#fff; --surface2:#f0f4ec; --border:#e2e8da;
+      --text:#1a2418; --muted:#6b7d65; --muted2:#a0b09a;
+      --accent:#6aaa2a; --accent-dark:#4d8a18; --accent-light:#edf7e3;
+      --danger:#e05252; --shadow:0 2px 12px rgba(26,36,24,0.07);
+      --shadow-lg:0 8px 32px rgba(26,36,24,0.1);
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    .topbar { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); box-shadow:0 1px 8px rgba(26,36,24,0.06); }
+    .topbar-inner { max-width:800px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+    .brand-mark { width:36px; height:36px; border-radius:10px; background:var(--accent); display:grid; place-items:center; font-family:'DM Serif Display',serif; color:white; }
+    .brand-name { font-weight:700; font-size:1rem; }
+    .btn-sm { padding:8px 18px; border-radius:999px; font-size:0.88rem; font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; font-family:'DM Sans',sans-serif; border:none; transition:all 0.2s; }
+    .btn-ghost { background:white; color:var(--text); border:1.5px solid var(--border); }
+    .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+
+    .wrap { max-width:800px; margin:0 auto; padding:28px 24px; }
+
+    /* COVER + LOGO PREVIEW */
+    .profile-preview {
+      background:white; border:1px solid var(--border); border-radius:20px;
+      overflow:hidden; margin-bottom:24px; box-shadow:var(--shadow);
+    }
+    .cover-area {
+      height:160px; position:relative; cursor:pointer;
+      background:linear-gradient(135deg,#d4edbc,#eaf7d8 50%,#c8e8a8);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    .cover-area img { width:100%; height:100%; object-fit:cover; }
+    .cover-overlay {
+      position:absolute; inset:0; background:rgba(0,0,0,0.35);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity 0.2s;
+    }
+    .cover-area:hover .cover-overlay { opacity:1; }
+    .upload-hint { color:white; font-size:0.9rem; font-weight:600; text-align:center; }
+    .upload-hint span { display:block; font-size:1.5rem; margin-bottom:4px; }
+    .logo-area {
+      display:flex; align-items:flex-end; justify-content:space-between;
+      padding:0 24px 20px; margin-top:-40px;
+    }
+    .logo-wrap { position:relative; cursor:pointer; }
+    .logo-circle {
+      width:80px; height:80px; border-radius:20px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+      display:grid; place-items:center; font-size:2rem; font-weight:800;
+      color:white; border:4px solid white; box-shadow:var(--shadow-lg);
+      overflow:hidden;
+    }
+    .logo-circle img { width:100%; height:100%; object-fit:cover; }
+    .logo-badge {
+      position:absolute; bottom:-4px; right:-4px; width:26px; height:26px;
+      background:var(--accent); border-radius:50%; display:grid; place-items:center;
+      border:2px solid white; font-size:0.75rem; color:white;
+    }
+    .biz-preview-name { font-family:'DM Serif Display',serif; font-size:1.4rem; }
+    .biz-preview-cat { font-size:0.82rem; color:var(--muted2); margin-top:2px; }
+
+    /* FORM */
+    .card { background:white; border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:16px; box-shadow:var(--shadow); }
+    .card-title { font-size:0.8rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:18px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .field { margin-bottom:16px; }
+    .field:last-child { margin-bottom:0; }
+    label { display:block; font-size:0.83rem; font-weight:600; color:var(--muted); margin-bottom:7px; }
+    input, textarea {
+      width:100%; background:var(--surface2); border:1.5px solid var(--border);
+      border-radius:12px; padding:11px 14px; font-size:0.92rem; color:var(--text);
+      font-family:'DM Sans',sans-serif; transition:border-color 0.2s;
+    }
+    input:focus, textarea:focus { outline:none; border-color:var(--accent); background:white; }
+    textarea { resize:vertical; min-height:100px; }
+
+    /* UPLOAD AREA */
+    .upload-area {
+      border:2px dashed var(--border); border-radius:12px; padding:24px;
+      text-align:center; cursor:pointer; transition:all 0.2s; position:relative;
+    }
+    .upload-area:hover { border-color:var(--accent); background:var(--accent-light); }
+    .upload-area input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+    .upload-icon { font-size:2rem; margin-bottom:8px; }
+    .upload-text { font-size:0.88rem; color:var(--muted); }
+    .upload-text strong { color:var(--accent); }
+    .upload-preview { margin-top:12px; }
+    .upload-preview img { max-height:120px; border-radius:10px; }
+    .uploading-bar {
+      height:4px; background:var(--surface2); border-radius:2px; margin-top:10px; overflow:hidden; display:none;
+    }
+    .uploading-bar .bar { height:100%; background:var(--accent); border-radius:2px; animation:progress 1.5s ease-in-out infinite; }
+    @keyframes progress { 0%{width:0%} 50%{width:70%} 100%{width:100%} }
+
+    .save-btn {
+      width:100%; padding:14px; border-radius:12px; border:none;
+      background:var(--accent); color:white; font-size:1rem; font-weight:700;
+      cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.2s;
+      margin-top:8px;
+    }
+    .save-btn:hover { background:var(--accent-dark); }
+    .save-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .msg { padding:12px 14px; border-radius:10px; font-size:0.88rem; font-weight:500; display:none; margin-top:12px; }
+    .msg.error { display:block; background:#fef2f2; color:var(--danger); border:1px solid #fecaca; }
+    .msg.success { display:block; background:var(--accent-light); color:var(--accent-dark); border:1px solid rgba(106,170,42,0.3); }
+
+    @media (max-width:600px) { .grid2 { grid-template-columns:1fr; } .wrap { padding:16px; } }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand">
+      <div class="brand-mark">D</div>
+      <span class="brand-name">Diwanet</span>
+    </a>
+    <div style="display:flex;gap:8px;">
+      <a id="viewPageBtn" href="#" class="btn-sm btn-ghost">View Page</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- PREVIEW -->
+  <div class="profile-preview">
+    <div class="cover-area" id="coverArea" onclick="document.getElementById('coverInput').click()">
+      <img id="coverPreview" src="" alt="" style="display:none;" />
+      <div class="cover-overlay">
+        <div class="upload-hint"><span>🖼️</span>Click to change cover</div>
+      </div>
+    </div>
+    <div class="logo-area">
+      <div>
+        <div class="logo-wrap" onclick="document.getElementById('logoInput').click()">
+          <div class="logo-circle" id="logoCircle">
+            <img id="logoPreview" src="" alt="" style="display:none;" />
+            <span id="logoInitial">?</span>
+          </div>
+          <div class="logo-badge">✏️</div>
+        </div>
+      </div>
+      <div>
+        <div class="biz-preview-name" id="previewName">Business Name</div>
+        <div class="biz-preview-cat" id="previewCat"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO UPLOAD -->
+  <div class="card">
+    <div class="card-title">Logo / Profile Image</div>
+    <div class="upload-area">
+      <input type="file" id="logoInput" accept="image/*" onchange="uploadImage('logo', this)" />
+      <div class="upload-icon">🏢</div>
+      <div class="upload-text">Click to upload logo<br><strong>JPG, PNG or WebP</strong> · Max 5MB</div>
+      <div class="uploading-bar" id="logoBar"><div class="bar"></div></div>
+    </div>
+  </div>
+
+  <!-- COVER UPLOAD -->
+  <div class="card">
+    <div class="card-title">Cover Photo</div>
+    <div class="upload-area">
+      <input type="file" id="coverInput" accept="image/*" onchange="uploadImage('cover', this)" />
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-text">Click to upload cover photo<br><strong>JPG, PNG or WebP</strong> · Recommended 1200×400</div>
+      <div class="uploading-bar" id="coverBar"><div class="bar"></div></div>
+    </div>
+  </div>
+
+  <!-- BUSINESS INFO -->
+  <div class="card">
+    <div class="card-title">Business Information</div>
+    <div class="field">
+      <label>Business Name</label>
+      <input id="business_name" placeholder="Your business name" oninput="updatePreview()" />
+    </div>
+    <div class="field">
+      <label>Short Description</label>
+      <textarea id="short_description" placeholder="Describe your business in a few sentences..."></textarea>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>City</label>
+        <input id="city" placeholder="Toronto" />
+      </div>
+      <div class="field">
+        <label>Country</label>
+        <input id="country" placeholder="Canada" />
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>Business Email</label>
+        <input id="business_email" type="email" placeholder="contact@yourbusiness.com" />
+      </div>
+      <div class="field">
+        <label>Business Phone</label>
+        <input id="business_phone" placeholder="+1 (555) 000-0000" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Website</label>
+      <input id="website" placeholder="https://yourbusiness.com" />
+    </div>
+  </div>
+
+  <button class="save-btn" id="saveBtn" onclick="saveProfile()">Save Changes</button>
+  <div class="msg" id="msg"></div>
+
+</div>
+
+<script>
+const API = "https://datominds-backend.onrender.com";
+const CLOUDINARY_CLOUD = "dcx8w7ooo";
+const CLOUDINARY_PRESET = "diwanet_uploads";
+
+let currentSlug = "";
+let logoUrl = null;
+let coverUrl = null;
+
+function getToken() { return localStorage.getItem("dn_token"); }
+function getUser() { try { return JSON.parse(localStorage.getItem("dn_user")); } catch { return null; } }
+function getBusiness() { try { return JSON.parse(localStorage.getItem("dn_business")); } catch { return null; } }
+
+function authHeaders() {
+  return { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" };
+}
+
+function showMsg(text, type) {
+  const msg = document.getElementById("msg");
+  msg.className = "msg " + type; msg.textContent = text;
+  msg.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function updatePreview() {
+  const name = document.getElementById("business_name").value || "Business Name";
+  document.getElementById("previewName").textContent = name;
+  document.getElementById("logoInitial").textContent = name.charAt(0).toUpperCase();
+}
+
+async function loadBusiness() {
+  const user = getUser();
+  const biz = getBusiness();
+
+  if (!user || !biz) {
+    window.location.href = "login.html"; return;
+  }
+
+  currentSlug = biz.slug;
+  document.getElementById("viewPageBtn").href = `business.html?slug=${currentSlug}`;
+
+  try {
+    const res = await fetch(`${API}/api/business/${currentSlug}`);
+    const data = await res.json();
+    if (!data.success) return;
+    const b = data.business;
+
+    document.getElementById("business_name").value = b.business_name || "";
+    document.getElementById("short_description").value = b.short_description || "";
+    document.getElementById("city").value = b.city || "";
+    document.getElementById("country").value = b.country || "";
+    document.getElementById("business_email").value = b.business_email || "";
+    document.getElementById("business_phone").value = b.business_phone || "";
+    document.getElementById("website").value = b.website || "";
+
+    document.getElementById("previewName").textContent = b.business_name;
+    document.getElementById("previewCat").textContent = b.category_name || "";
+    document.getElementById("logoInitial").textContent = b.business_name.charAt(0).toUpperCase();
+
+    if (b.logo_url) {
+      logoUrl = b.logo_url;
+      const img = document.getElementById("logoPreview");
+      img.src = b.logo_url; img.style.display = "block";
+      document.getElementById("logoInitial").style.display = "none";
+    }
+
+    if (b.cover_url) {
+      coverUrl = b.cover_url;
+      const img = document.getElementById("coverPreview");
+      img.src = b.cover_url; img.style.display = "block";
+    }
+  } catch (e) { console.error(e); }
+}
+
+async function uploadImage(type, input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    showMsg("File too large. Max 5MB.", "error"); return;
+  }
+
+  const barId = type === "logo" ? "logoBar" : "coverBar";
+  document.getElementById(barId).style.display = "block";
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_PRESET);
+  formData.append("folder", "diwanet");
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+      method: "POST", body: formData
+    });
+    const data = await res.json();
+
+    if (data.secure_url) {
+      if (type === "logo") {
+        logoUrl = data.secure_url;
+        const img = document.getElementById("logoPreview");
+        img.src = logoUrl; img.style.display = "block";
+        document.getElementById("logoInitial").style.display = "none";
+      } else {
+        coverUrl = data.secure_url;
+        const img = document.getElementById("coverPreview");
+        img.src = coverUrl; img.style.display = "block";
+      }
+      showMsg(type === "logo" ? "Logo uploaded!" : "Cover uploaded!", "success");
+    } else {
+      showMsg("Upload failed. Please try again.", "error");
+    }
+  } catch (e) {
+    showMsg("Upload error: " + e.message, "error");
+  }
+
+  document.getElementById(barId).style.display = "none";
+}
+
+async function saveProfile() {
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = true; btn.textContent = "Saving...";
+
+  const payload = {
+    business_name: document.getElementById("business_name").value.trim(),
+    short_description: document.getElementById("short_description").value.trim(),
+    city: document.getElementById("city").value.trim(),
+    country: document.getElementById("country").value.trim(),
+    business_email: document.getElementById("business_email").value.trim(),
+    business_phone: document.getElementById("business_phone").value.trim(),
+    website: document.getElementById("website").value.trim(),
+  };
+
+  if (logoUrl) payload.logo_url = logoUrl;
+  if (coverUrl) payload.cover_url = coverUrl;
+
+  try {
+    const res = await fetch(`${API}/api/business/${currentSlug}`, {
+      method: "PUT", headers: authHeaders(), body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      // localStorage'daki business adını güncelle
+      const biz = getBusiness();
+      if (biz) {
+        biz.business_name = data.business.business_name;
+        localStorage.setItem("dn_business", JSON.stringify(biz));
+      }
+      showMsg("Profile saved successfully!", "success");
+      setTimeout(() => { window.location.href = `business.html?slug=${currentSlug}`; }, 1200);
+    } else {
+      showMsg(data.error || "Save failed.", "error");
+    }
+  } catch (e) {
+    showMsg("Connection error: " + e.message, "error");
+  }
+
+  btn.disabled = false; btn.textContent = "Save Changes";
+}
+
+loadBusiness();
+</script>
+</body>
+</html>

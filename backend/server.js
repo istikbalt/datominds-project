@@ -512,3 +512,40 @@ app.get("/api/search", async (req, res) => {
 
 app.get("/", (req, res) => { res.send("Datominds backend is running."); });
 app.listen(PORT, () => { console.log(`Server is running on port ${PORT}`); });
+
+// UPDATE BUSINESS PROFILE
+app.put("/api/business/:slug", async (req, res) => {
+  const session = await requireAuth(req, res);
+  if (!session) return;
+  if (session.user_type !== "business") return res.status(403).json({ success: false, error: "Only business accounts can edit profiles." });
+
+  const { slug } = req.params;
+  const { business_name, short_description, business_email, business_phone, city, country, logo_url, cover_url, website } = req.body;
+
+  try {
+    const [businesses] = await pool.execute("SELECT id, owner_user_id FROM businesses WHERE slug = ? LIMIT 1", [slug]);
+    if (!businesses.length) return res.status(404).json({ success: false, error: "Business not found." });
+    const biz = businesses[0];
+    if (biz.owner_user_id !== session.user_id) return res.status(403).json({ success: false, error: "Not authorized." });
+
+    const updates = [];
+    const params = [];
+    if (business_name) { updates.push("business_name = ?"); params.push(business_name); }
+    if (short_description !== undefined) { updates.push("short_description = ?"); params.push(short_description); }
+    if (business_email !== undefined) { updates.push("business_email = ?"); params.push(business_email || null); }
+    if (business_phone !== undefined) { updates.push("business_phone = ?"); params.push(business_phone || null); }
+    if (city !== undefined) { updates.push("city = ?"); params.push(city); }
+    if (country !== undefined) { updates.push("country = ?"); params.push(country); }
+    if (logo_url !== undefined) { updates.push("logo_url = ?"); params.push(logo_url || null); }
+    if (cover_url !== undefined) { updates.push("cover_url = ?"); params.push(cover_url || null); }
+    if (website !== undefined) { updates.push("website = ?"); params.push(website || null); }
+    if (updates.length === 0) return res.status(400).json({ success: false, error: "Nothing to update." });
+
+    params.push(biz.id);
+    await pool.execute(`UPDATE businesses SET ${updates.join(", ")} WHERE id = ?`, params);
+    const [updated] = await pool.execute(
+      "SELECT b.*, c.name AS category_name FROM businesses b LEFT JOIN categories c ON b.category_id = c.id WHERE b.id = ?", [biz.id]
+    );
+    return res.json({ success: true, business: updated[0] });
+  } catch (error) { return res.status(500).json({ success: false, error: error.message }); }
+});
