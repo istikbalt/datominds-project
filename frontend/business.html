@@ -165,8 +165,8 @@ const followBtnHtml=user&&!isOwner?`<button class="follow-btn ${b.is_following?"
 const wrap=document.getElementById("mainWrap");
 wrap.style.cssText="max-width:1060px;margin:0 auto;padding:28px 24px;display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;";
 wrap.innerHTML=`
-<div style="grid-column:1/-1;"><div class="profile-panel"><div class="profile-cover"></div><div class="profile-body">
-<div class="logo-wrap"><div class="biz-logo">${initial}</div>${followBtnHtml}</div>
+<div style="grid-column:1/-1;"><div class="profile-panel"><div class="profile-cover" ${b.cover_url ? `style="background-image:url(${b.cover_url});background-size:cover;background-position:center;"` : ""}></div><div class="profile-body">
+<div class="logo-wrap"><div class="biz-logo" style="overflow:hidden;">${b.logo_url ? `<img src="${b.logo_url}" style="width:100%;height:100%;object-fit:cover;" />` : initial}</div>${followBtnHtml}</div>
 <div class="biz-name">${escHtml(b.business_name)}</div>
 <div class="biz-tags"><span class="biz-tag green">${escHtml(b.category_name||"Uncategorized")}</span><span class="biz-tag">${escHtml(b.business_type||"")}</span>${b.city?`<span class="biz-tag">📍 ${escHtml(b.city)}, ${escHtml(b.country)}</span>`:""}</div>
 ${b.short_description?`<div class="biz-desc">${escHtml(b.short_description)}</div>`:""}
@@ -184,7 +184,8 @@ ${b.business_email?`<div class="info-row"><div class="info-lbl">Email</div><div 
 ${b.business_phone?`<div class="info-row"><div class="info-lbl">Phone</div><div class="info-val">${escHtml(b.business_phone)}</div></div>`:""}
 <div class="info-row"><div class="info-lbl">Location</div><div class="info-val">${escHtml(b.city?b.city+", "+b.country:b.country)}</div></div>
 <div class="info-row"><div class="info-lbl">Category</div><div class="info-val">${escHtml(b.category_name||"-")}</div></div>
-<div class="info-row"><div class="info-lbl">Type</div><div class="info-val" style="text-transform:capitalize;">${escHtml(b.business_type||"-")}</div></div></div>
+<div class="info-row"><div class="info-lbl">Type</div><div class="info-val" style="text-transform:capitalize;">${escHtml(b.business_type||"-")}</div></div>
+${b.website?`<div class="info-row"><div class="info-lbl">Website</div><div class="info-val"><a href="${escHtml(b.website)}" target="_blank" style="color:var(--accent);text-decoration:none;">${escHtml(b.website.replace(/https?:\/\//,""))}</a></div></div>`:""}</div>
 ${!user?`<div class="join-widget"><h3>Join Diwanet</h3><p>Follow businesses, like and comment on posts.</p><a href="register.html" class="j-btn j-primary">Create free account</a><a href="login.html" class="j-btn j-ghost">Sign in</a></div>`:""}
 </div>`;
 loadPosts();}
