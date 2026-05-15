@@ -3,234 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Business · Datominds Network</title>
+  <title>Business · Diwanet</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d0f14; --surface: #161a22; --surface2: #1d2230;
-      --border: #252c3a; --text: #e8eaf0; --muted: #6b7491; --muted2: #4a5270;
-      --accent: #4f8ef7; --accent-dim: rgba(79,142,247,0.12);
-      --success: #34d399; --danger: #f87171;
+      --bg: #f5f7f2; --surface: #ffffff; --surface2: #f0f4ec;
+      --border: #e2e8da; --text: #1a2418; --muted: #6b7d65; --muted2: #a0b09a;
+      --accent: #6aaa2a; --accent-dark: #4d8a18; --accent-light: #edf7e3;
+      --accent-dim: rgba(106,170,42,0.1); --danger: #e05252;
+      --shadow: 0 2px 12px rgba(26,36,24,0.07); --shadow-lg: 0 8px 32px rgba(26,36,24,0.1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    .topbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(13,15,20,0.92); backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-    .topbar-inner {
-      max-width: 1000px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 20px; gap: 16px;
-    }
+    .topbar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); box-shadow: 0 1px 8px rgba(26,36,24,0.06); }
+    .topbar-inner { max-width: 1060px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
-    .brand-mark {
-      width: 36px; height: 36px; border-radius: 11px; background: var(--accent);
-      display: grid; place-items: center; font-family: 'DM Serif Display', serif; color: white;
-    }
-    .brand-name { font-weight: 600; font-size: 0.95rem; }
+    .brand-mark { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); display: grid; place-items: center; font-family: 'DM Serif Display', serif; color: white; font-size: 1.1rem; }
+    .brand-name { font-weight: 700; font-size: 1rem; }
     .nav-right { display: flex; gap: 8px; align-items: center; }
-    .btn-sm {
-      padding: 8px 16px; border-radius: 999px; font-size: 0.88rem;
-      font-weight: 600; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 6px;
-      font-family: 'DM Sans', sans-serif; border: none; transition: opacity 0.2s;
-    }
-    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-sm { padding: 8px 18px; border-radius: 999px; font-size: 0.88rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-family: 'DM Sans', sans-serif; border: none; transition: all 0.2s; }
+    .btn-ghost { background: white; color: var(--text); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
     .btn-primary { background: var(--accent); color: white; }
-    .btn-danger { background: rgba(248,113,113,0.15); color: var(--danger); border: 1px solid rgba(248,113,113,0.3); }
-    .btn-sm:hover { opacity: 0.82; }
-
-    .wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
-
-    /* PROFILE PANEL */
-    .profile-panel {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden; margin-bottom: 20px; grid-column: 1 / -1;
-    }
-    .profile-cover {
-      height: 140px;
-      background: linear-gradient(135deg, #1a2a50 0%, #1d253a 50%, #1a3050 100%);
-      position: relative;
-    }
-    .profile-cover::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to bottom, transparent 40%, rgba(22,26,34,0.6));
-    }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .wrap { max-width: 1060px; margin: 0 auto; padding: 28px 24px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+    .profile-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-bottom: 20px; grid-column: 1/-1; box-shadow: var(--shadow); }
+    .profile-cover { height: 160px; background: linear-gradient(135deg, #d4edbc 0%, #eaf7d8 50%, #c8e8a8 100%); }
     .profile-body { padding: 0 28px 28px; }
-    .logo-wrap { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -36px; margin-bottom: 16px; }
-    .biz-logo {
-      width: 72px; height: 72px; border-radius: 20px;
-      background: linear-gradient(135deg, var(--accent), #6366f1);
-      display: grid; place-items: center;
-      font-size: 1.8rem; font-weight: 700; color: white;
-      border: 3px solid var(--surface); flex-shrink: 0;
-    }
-    .follow-btn {
-      padding: 9px 22px; border-radius: 999px; font-size: 0.88rem;
-      font-weight: 600; cursor: pointer; border: 1px solid var(--border);
-      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
-    }
-    .follow-btn.not-following { background: var(--accent); color: white; border-color: var(--accent); }
-    .follow-btn.following { background: var(--surface2); color: var(--muted); }
-    .follow-btn.following:hover { background: rgba(248,113,113,0.1); color: var(--danger); border-color: rgba(248,113,113,0.3); }
-    .biz-name { font-family: 'DM Serif Display', serif; font-size: 1.7rem; margin-bottom: 6px; }
-    .biz-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .biz-tag {
-      padding: 4px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 500;
-      background: var(--surface2); color: var(--muted); border: 1px solid var(--border);
-    }
-    .biz-desc { font-size: 0.92rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
-    .biz-stats { display: flex; gap: 24px; flex-wrap: wrap; }
-    .biz-stat { text-align: center; }
-    .biz-stat-val { font-size: 1.15rem; font-weight: 700; }
-    .biz-stat-lbl { font-size: 0.76rem; color: var(--muted); }
-
-    /* TABS */
-    .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 6px; }
-    .tab {
-      flex: 1; padding: 9px; border-radius: 10px; text-align: center;
-      font-size: 0.88rem; font-weight: 500; cursor: pointer;
-      color: var(--muted); border: none; background: none;
-      font-family: 'DM Sans', sans-serif; transition: all 0.15s;
-    }
-    .tab.active { background: var(--accent); color: white; font-weight: 600; }
-
-    /* POSTS */
-    .post {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden; margin-bottom: 14px; transition: border-color 0.2s;
-    }
-    .post:hover { border-color: var(--muted2); }
+    .logo-wrap { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -42px; margin-bottom: 16px; }
+    .biz-logo { width: 84px; height: 84px; border-radius: 20px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); display: grid; place-items: center; font-size: 2.2rem; font-weight: 800; color: white; border: 4px solid white; flex-shrink: 0; box-shadow: var(--shadow-lg); }
+    .follow-btn { padding: 10px 26px; border-radius: 999px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .follow-btn.not-following { background: var(--accent); color: white; border: none; }
+    .follow-btn.not-following:hover { background: var(--accent-dark); }
+    .follow-btn.following { background: white; color: var(--muted); border: 1.5px solid var(--border); }
+    .follow-btn.following:hover { color: var(--danger); border-color: var(--danger); }
+    .biz-name { font-family: 'DM Serif Display', serif; font-size: 1.9rem; margin-bottom: 8px; }
+    .biz-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .biz-tag { padding: 4px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .biz-tag.green { background: var(--accent-light); color: var(--accent-dark); border-color: rgba(106,170,42,0.2); }
+    .biz-desc { font-size: 0.93rem; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+    .biz-stats { display: flex; gap: 32px; }
+    .biz-stat-val { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+    .biz-stat-lbl { font-size: 0.76rem; color: var(--muted2); margin-top: 2px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 18px; background: white; border: 1px solid var(--border); border-radius: 14px; padding: 5px; box-shadow: var(--shadow); }
+    .tab { flex: 1; padding: 9px; border-radius: 10px; text-align: center; font-size: 0.88rem; font-weight: 500; cursor: pointer; color: var(--muted); border: none; background: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+    .tab.active { background: var(--accent); color: white; font-weight: 700; }
+    .tab:hover:not(.active) { background: var(--surface2); }
+    .compose { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; display: none; box-shadow: var(--shadow); }
+    .compose.visible { display: block; }
+    .compose-label { font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .compose textarea { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 0.92rem; color: var(--text); font-family: 'DM Sans', sans-serif; resize: none; min-height: 90px; transition: border-color 0.2s; }
+    .compose textarea:focus { outline: none; border-color: var(--accent); background: white; }
+    .compose-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .compose-hint { font-size: 0.78rem; color: var(--muted2); }
+    .post-btn { padding: 9px 22px; border-radius: 999px; border: none; background: var(--accent); color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .post-btn:hover { background: var(--accent-dark); }
+    .post-btn:disabled { opacity: 0.5; }
+    .post { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 14px; transition: all 0.2s; box-shadow: var(--shadow); }
+    .post:hover { box-shadow: var(--shadow-lg); border-color: rgba(106,170,42,0.3); }
     .post-header { padding: 16px 18px 0; display: flex; align-items: center; gap: 12px; }
-    .post-avatar {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #6366f1);
-      display: grid; place-items: center; font-weight: 700; color: white;
-      font-size: 0.88rem; flex-shrink: 0;
-    }
-    .post-author { font-weight: 600; font-size: 0.92rem; }
-    .post-time { font-size: 0.78rem; color: var(--muted); }
+    .post-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); display: grid; place-items: center; font-weight: 800; color: white; font-size: 1rem; flex-shrink: 0; }
+    .post-author { font-weight: 700; font-size: 0.93rem; }
+    .post-time { font-size: 0.78rem; color: var(--muted2); margin-top: 2px; }
     .post-body { padding: 12px 18px; }
-    .post-content { font-size: 0.92rem; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
+    .post-content { font-size: 0.93rem; line-height: 1.65; white-space: pre-wrap; }
     .post-image { width: 100%; max-height: 360px; object-fit: cover; border-radius: 10px; margin-top: 10px; }
-    .post-actions {
-      padding: 10px 18px; display: flex; align-items: center; gap: 4px;
-      border-top: 1px solid var(--border);
-    }
-    .action-btn {
-      display: flex; align-items: center; gap: 6px;
-      padding: 7px 12px; border-radius: 999px; border: none;
-      background: none; color: var(--muted); font-size: 0.84rem;
-      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
-    }
+    .post-actions { padding: 10px 18px; display: flex; align-items: center; gap: 4px; border-top: 1px solid var(--border); }
+    .action-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; border: none; background: none; color: var(--muted); font-size: 0.84rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
     .action-btn:hover { background: var(--surface2); color: var(--text); }
-    .action-btn.liked { color: var(--danger); }
+    .action-btn.liked { color: var(--danger); font-weight: 600; }
     .action-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
-
-    /* COMMENTS */
-    .comments-box { border-top: 1px solid var(--border); padding: 14px 18px; display: none; }
+    .comments-box { border-top: 1px solid var(--border); padding: 14px 18px; display: none; background: var(--surface2); }
     .comments-box.open { display: block; }
     .comment { display: flex; gap: 10px; margin-bottom: 10px; }
-    .c-avatar {
-      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-      display: grid; place-items: center; font-size: 0.72rem; font-weight: 700; color: white;
-    }
-    .c-avatar.biz { background: linear-gradient(135deg, var(--accent), #6366f1); }
-    .c-avatar.ind { background: linear-gradient(135deg, #34d399, #059669); }
-    .c-bubble { background: var(--surface2); border-radius: 10px; padding: 8px 11px; flex: 1; }
-    .c-name { font-size: 0.8rem; font-weight: 600; margin-bottom: 2px; }
+    .c-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; color: white; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); }
+    .c-avatar.ind { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+    .c-bubble { background: white; border-radius: 12px; padding: 9px 12px; flex: 1; border: 1px solid var(--border); }
+    .c-name { font-size: 0.8rem; font-weight: 700; margin-bottom: 3px; }
     .c-name a { color: var(--text); text-decoration: none; }
     .c-name a:hover { color: var(--accent); }
-    .c-text { font-size: 0.86rem; color: var(--text); }
-    .c-time { font-size: 0.74rem; color: var(--muted); margin-top: 3px; }
-    .c-input-row { display: flex; gap: 8px; margin-top: 10px; }
-    .c-input {
-      flex: 1; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 8px 12px; font-size: 0.86rem;
-      color: var(--text); font-family: 'DM Sans', sans-serif; resize: none;
-    }
+    .c-text { font-size: 0.87rem; line-height: 1.5; }
+    .c-time { font-size: 0.74rem; color: var(--muted2); margin-top: 4px; }
+    .c-input-row { display: flex; gap: 8px; margin-top: 12px; }
+    .c-input { flex: 1; background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 0.87rem; color: var(--text); font-family: 'DM Sans', sans-serif; resize: none; }
     .c-input:focus { outline: none; border-color: var(--accent); }
-    .c-send {
-      padding: 8px 14px; border-radius: 10px; border: none;
-      background: var(--accent); color: white; font-size: 0.84rem;
-      font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    }
-
-    /* SHARE MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; place-items: center; z-index: 200; }
+    .c-send { padding: 9px 16px; border-radius: 10px; border: none; background: var(--accent); color: white; font-size: 0.84rem; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(26,36,24,0.5); display: none; place-items: center; z-index: 200; backdrop-filter: blur(4px); }
     .modal-overlay.open { display: grid; }
-    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 90%; max-width: 460px; }
-    .modal h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 14px; }
-    .modal-preview { background: var(--surface2); border-radius: 10px; padding: 12px; margin-bottom: 14px; font-size: 0.86rem; color: var(--muted); }
+    .modal { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 90%; max-width: 460px; box-shadow: var(--shadow-lg); }
+    .modal h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 14px; }
+    .modal-preview { background: var(--accent-light); border-radius: 12px; padding: 14px; margin-bottom: 14px; font-size: 0.87rem; color: var(--muted); border-left: 3px solid var(--accent); }
     .modal-preview strong { display: block; color: var(--text); font-size: 0.84rem; margin-bottom: 5px; }
-    .modal textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.9rem; color: var(--text); font-family: 'DM Sans', sans-serif; resize: none; min-height: 90px; }
+    .modal textarea { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 0.9rem; color: var(--text); font-family: 'DM Sans', sans-serif; resize: none; min-height: 90px; }
     .modal textarea:focus { outline: none; border-color: var(--accent); }
     .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
-    .btn-cancel { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.86rem; }
-    .btn-share { padding: 8px 18px; border-radius: 999px; border: none; background: var(--accent); color: white; font-weight: 600; font-size: 0.86rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-
-    /* RIGHT SIDEBAR */
-    .sidebar { display: grid; gap: 14px; align-self: start; position: sticky; top: 80px; }
-    .widget { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
-    .widget h3 { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
-    .info-row { display: flex; flex-direction: column; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.86rem; }
+    .btn-cancel { padding: 9px 18px; border-radius: 999px; border: 1.5px solid var(--border); background: white; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.87rem; }
+    .btn-share { padding: 9px 22px; border-radius: 999px; border: none; background: var(--accent); color: white; font-weight: 700; font-size: 0.87rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .sidebar { display: grid; gap: 14px; }
+    .widget { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+    .widget-title { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+    .info-row { padding: 9px 0; border-bottom: 1px solid var(--border); }
     .info-row:last-child { border-bottom: none; }
-    .info-row .lbl { font-size: 0.76rem; color: var(--muted); margin-bottom: 2px; }
-    .info-row .val { color: var(--text); font-weight: 500; }
-    .tagged-item { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.86rem; }
-    .tagged-item:last-child { border-bottom: none; }
-    .tagged-item a { color: var(--accent); text-decoration: none; font-weight: 500; }
-    .tagged-item .ttime { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
-
-    /* OWNER COMPOSE */
-    .compose {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 18px; margin-bottom: 14px; display: none;
-    }
-    .compose.visible { display: block; }
-    .compose h3 { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
-    .compose textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 0.92rem; color: var(--text); font-family: 'DM Sans', sans-serif; resize: none; min-height: 85px; }
-    .compose textarea:focus { outline: none; border-color: var(--accent); }
-    .compose-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 10px; }
-    .tag-hint { font-size: 0.78rem; color: var(--muted); }
-    .post-btn { padding: 9px 20px; border-radius: 999px; border: none; background: var(--accent); color: white; font-weight: 600; font-size: 0.86rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .post-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .loading { text-align: center; padding: 32px; color: var(--muted); font-size: 0.9rem; }
-    .empty { text-align: center; padding: 32px 20px; color: var(--muted); font-size: 0.9rem; }
+    .info-lbl { font-size: 0.74rem; color: var(--muted2); margin-bottom: 3px; }
+    .info-val { font-size: 0.88rem; font-weight: 500; }
+    .join-widget { background: var(--accent-light); border: 1px solid rgba(106,170,42,0.2); border-radius: 16px; padding: 20px; text-align: center; }
+    .join-widget h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 8px; }
+    .join-widget p { font-size: 0.84rem; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+    .j-btn { display: block; padding: 10px; border-radius: 12px; text-align: center; font-size: 0.88rem; font-weight: 700; text-decoration: none; transition: all 0.2s; margin-bottom: 8px; }
+    .j-primary { background: var(--accent); color: white; }
+    .j-ghost { background: white; color: var(--text); border: 1.5px solid var(--border); }
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted2); font-size: 0.9rem; }
+    .loading { text-align: center; padding: 36px; color: var(--muted2); font-size: 0.88rem; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 11px 20px; font-size: 0.86rem; font-weight: 500; box-shadow: 0 8px 32px rgba(0,0,0,0.4); transition: transform 0.3s; z-index: 300; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); border-radius: 12px; padding: 11px 22px; font-size: 0.88rem; font-weight: 600; color: white; box-shadow: var(--shadow-lg); transition: transform 0.3s; z-index: 300; }
     .toast.show { transform: translateX(-50%) translateY(0); }
-
-    @media (max-width: 760px) {
-      .wrap { grid-template-columns: 1fr; }
-      .sidebar { position: static; }
-    }
+    @media (max-width: 760px) { .wrap { grid-template-columns: 1fr; padding: 16px; } .profile-body { padding: 0 18px 20px; } .biz-name { font-size: 1.5rem; } }
   </style>
 </head>
 <body>
-
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="feed.html" class="brand">
+    <a href="index.html" class="brand">
       <div class="brand-mark">D</div>
-      <span class="brand-name">Datominds</span>
+      <span class="brand-name">Diwanet</span>
     </a>
     <div class="nav-right" id="navRight"></div>
   </div>
 </header>
-
-<div class="wrap" id="mainWrap" style="display:block;">
-  <div class="loading">Loading business...</div>
-</div>
-
-<!-- SHARE MODAL -->
+<div id="mainWrap" style="max-width:1060px;margin:0 auto;padding:28px 24px;"><div class="loading">Loading business...</div></div>
 <div class="modal-overlay" id="shareModal">
   <div class="modal">
     <h3>Share this post</h3>
@@ -242,428 +144,66 @@
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-const API = "https://datominds-backend.onrender.com";
-let bizData = null;
-let shareTargetId = null;
-
-function getToken() { return localStorage.getItem("dn_token"); }
-function getUser() { try { return JSON.parse(localStorage.getItem("dn_user")); } catch { return null; } }
-function getBusiness() { try { return JSON.parse(localStorage.getItem("dn_business")); } catch { return null; } }
-function getSlug() { return new URLSearchParams(window.location.search).get("slug"); }
-
-function authHeaders() {
-  const t = getToken();
-  return t ? { "Authorization": "Bearer " + t, "Content-Type": "application/json" } : { "Content-Type": "application/json" };
-}
-
-function escHtml(s) {
-  if (!s) return "";
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-function timeAgo(ds) {
-  const d = new Date(ds), diff = (Date.now() - d.getTime()) / 1000;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return Math.floor(diff/60) + "m ago";
-  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
-  if (diff < 604800) return Math.floor(diff/86400) + "d ago";
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2800);
-}
-
-function setupNav() {
-  const user = getUser();
-  const biz = getBusiness();
-  const navRight = document.getElementById("navRight");
-  if (user) {
-    const label = biz ? biz.business_name : `${user.first_name} ${user.last_name}`;
-    navRight.innerHTML = `
-      <a href="feed.html" class="btn-sm btn-ghost">Feed</a>
-      <button class="btn-sm btn-ghost" onclick="doLogout()">Sign out</button>
-    `;
-  } else {
-    navRight.innerHTML = `
-      <a href="login.html" class="btn-sm btn-ghost">Sign in</a>
-      <a href="register.html" class="btn-sm btn-primary">Join</a>
-    `;
-  }
-}
-
-async function doLogout() {
-  const token = getToken();
-  if (token) await fetch(`${API}/api/auth/logout`, { method: "POST", headers: { "Authorization": "Bearer " + token } });
-  localStorage.clear();
-  window.location.href = "index.html";
-}
-
-async function loadBusiness() {
-  const slug = getSlug();
-  if (!slug) { document.getElementById("mainWrap").innerHTML = '<div class="loading">No business specified.</div>'; return; }
-
-  const token = getToken();
-  const headers = token ? { "Authorization": "Bearer " + token } : {};
-
-  try {
-    const res = await fetch(`${API}/api/business/${slug}`, { headers });
-    const data = await res.json();
-    if (!data.success) { document.getElementById("mainWrap").innerHTML = '<div class="loading">Business not found.</div>'; return; }
-
-    bizData = data.business;
-    document.title = `${bizData.business_name} · Datominds`;
-    renderPage();
-  } catch (e) {
-    document.getElementById("mainWrap").innerHTML = '<div class="loading">Connection error.</div>';
-  }
-}
-
-function renderPage() {
-  const b = bizData;
-  const user = getUser();
-  const myBiz = getBusiness();
-  const isOwner = myBiz && myBiz.slug === b.slug;
-  const canFollow = user && !isOwner;
-  const initial = b.business_name.charAt(0).toUpperCase();
-  const joinDate = new Date(b.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" });
-
-  const followBtnHtml = canFollow
-    ? `<button class="follow-btn ${b.is_following ? "following" : "not-following"}" id="followBtn" onclick="toggleFollow()">
-        ${b.is_following ? "Following" : "+ Follow"}
-       </button>`
-    : isOwner ? `<span class="btn-sm btn-ghost" style="cursor:default;">Your page</span>` : `<a href="login.html" class="btn-sm btn-primary">Follow</a>`;
-
-  document.getElementById("mainWrap").innerHTML = `
-    <div style="grid-column:1/-1;">
-      <!-- PROFILE PANEL -->
-      <div class="profile-panel">
-        <div class="profile-cover"></div>
-        <div class="profile-body">
-          <div class="logo-wrap">
-            <div class="biz-logo">${initial}</div>
-            ${followBtnHtml}
-          </div>
-          <div class="biz-name">${escHtml(b.business_name)}</div>
-          <div class="biz-meta">
-            <span class="biz-tag">${escHtml(b.category_name || "Uncategorized")}</span>
-            <span class="biz-tag">${escHtml(b.business_type || "")}</span>
-            ${b.city ? `<span class="biz-tag">📍 ${escHtml(b.city)}</span>` : ""}
-          </div>
-          ${b.short_description ? `<div class="biz-desc">${escHtml(b.short_description)}</div>` : ""}
-          <div class="biz-stats">
-            <div class="biz-stat"><div class="biz-stat-val" id="followerCount">${b.follower_count || 0}</div><div class="biz-stat-lbl">Followers</div></div>
-            <div class="biz-stat"><div class="biz-stat-val">${joinDate}</div><div class="biz-stat-lbl">Joined</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MAIN + SIDEBAR -->
-    <div>
-      <!-- COMPOSE (owner only) -->
-      <div class="compose ${isOwner ? "visible" : ""}" id="composeBox">
-        <h3>New Post</h3>
-        <textarea id="composeText" placeholder="Share news, announcements, or tag another business with @slug..."></textarea>
-        <div class="compose-footer">
-          <span class="tag-hint">Use @slug to tag businesses</span>
-          <button class="post-btn" id="postBtn" onclick="submitPost()">Publish</button>
-        </div>
-      </div>
-
-      <!-- TABS -->
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab('posts')">Posts</button>
-        <button class="tab" onclick="switchTab('tagged')">Tagged</button>
-      </div>
-
-      <div id="tab-posts" class="tab-content active">
-        <div class="loading">Loading posts...</div>
-      </div>
-      <div id="tab-tagged" class="tab-content">
-        <div class="loading">Loading...</div>
-      </div>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="widget">
-        <h3>Business Info</h3>
-        ${b.business_email ? `<div class="info-row"><span class="lbl">Email</span><span class="val">${escHtml(b.business_email)}</span></div>` : ""}
-        ${b.business_phone ? `<div class="info-row"><span class="lbl">Phone</span><span class="val">${escHtml(b.business_phone)}</span></div>` : ""}
-        <div class="info-row"><span class="lbl">Country</span><span class="val">${escHtml(b.country)}</span></div>
-        ${b.city ? `<div class="info-row"><span class="lbl">City</span><span class="val">${escHtml(b.city)}</span></div>` : ""}
-        <div class="info-row"><span class="lbl">Category</span><span class="val">${escHtml(b.category_name || "-")}</span></div>
-        <div class="info-row"><span class="lbl">Type</span><span class="val">${escHtml(b.business_type || "-")}</span></div>
-      </div>
-    </div>
-  `;
-
-  // Şimdi mainWrap'ı grid yap
-  document.getElementById("mainWrap").style.display = "grid";
-  document.getElementById("mainWrap").style.gridTemplateColumns = "1fr 320px";
-  document.getElementById("mainWrap").style.gap = "24px";
-  document.getElementById("mainWrap").style.alignItems = "start";
-
-  loadPosts();
-}
-
-// ── TABS ──────────────────────────────────────────────────
-
-function switchTab(tab) {
-  document.querySelectorAll(".tab").forEach((t, i) => {
-    const tabs = ["posts", "tagged"];
-    t.classList.toggle("active", tabs[i] === tab);
-  });
-  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
-  document.getElementById(`tab-${tab}`).classList.add("active");
-  if (tab === "tagged") loadTagged();
-}
-
-// ── POSTS ─────────────────────────────────────────────────
-
-async function loadPosts() {
-  const slug = getSlug();
-  const token = getToken();
-  const headers = token ? { "Authorization": "Bearer " + token } : {};
-  try {
-    const res = await fetch(`${API}/api/business/${slug}/posts`, { headers });
-    const data = await res.json();
-    const container = document.getElementById("tab-posts");
-    if (!data.success || data.posts.length === 0) {
-      container.innerHTML = '<div class="empty">No posts yet.</div>'; return;
-    }
-    container.innerHTML = data.posts.map(renderPost).join("");
-  } catch {
-    document.getElementById("tab-posts").innerHTML = '<div class="empty">Could not load posts.</div>';
-  }
-}
-
-async function loadTagged() {
-  const slug = getSlug();
-  const token = getToken();
-  const headers = token ? { "Authorization": "Bearer " + token } : {};
-  try {
-    const res = await fetch(`${API}/api/business/${slug}/posts`, { headers });
-    const data = await res.json();
-    const container = document.getElementById("tab-tagged");
-    if (!data.success || !data.tagged_posts || data.tagged_posts.length === 0) {
-      container.innerHTML = '<div class="empty">Not tagged in any posts yet.</div>'; return;
-    }
-    container.innerHTML = data.tagged_posts.map(t => `
-      <div class="post" style="margin-bottom:12px;">
-        <div class="post-header">
-          <div class="post-avatar">${t.business_name.charAt(0)}</div>
-          <div>
-            <div class="post-author"><a href="business.html?slug=${t.business_slug}" style="color:var(--text);text-decoration:none;">${escHtml(t.business_name)}</a> tagged this business</div>
-            <div class="post-time">${timeAgo(t.created_at)}</div>
-          </div>
-        </div>
-        <div class="post-body">
-          <div class="post-content">${escHtml(t.content).substring(0, 200)}${t.content.length > 200 ? "…" : ""}</div>
-        </div>
-      </div>
-    `).join("");
-  } catch {
-    document.getElementById("tab-tagged").innerHTML = '<div class="empty">Could not load.</div>';
-  }
-}
-
-function renderPost(p) {
-  const user = getUser();
-  const canInteract = !!user;
-  const likedClass = p.is_liked ? "action-btn liked" : "action-btn";
-  const likedIcon = p.is_liked ? "❤️" : "🤍";
-
-  const actionsHtml = canInteract
-    ? `<button class="${likedClass}" id="like-${p.id}" onclick="toggleLike(${p.id})">
-        ${likedIcon} <span id="lc-${p.id}">${p.like_count}</span>
-       </button>
-       <div class="action-sep"></div>
-       <button class="action-btn" onclick="toggleComments(${p.id})">💬 ${p.comment_count}</button>
-       <div class="action-sep"></div>
-       <button class="action-btn" onclick="openShare(${p.id}, '${escAttr(p.business_name)}', '${escAttr((p.content||"").substring(0,80))}')">🔁 ${p.share_count}</button>`
-    : `<span class="action-btn" style="cursor:default;">🤍 ${p.like_count}</span>
-       <div class="action-sep"></div>
-       <span class="action-btn" style="cursor:default;">💬 ${p.comment_count}</span>
-       <div class="action-sep"></div>
-       <a href="login.html" class="action-btn" style="text-decoration:none;color:var(--accent);">Sign in to interact</a>`;
-
-  return `
-    <div class="post" id="post-${p.id}">
-      <div class="post-header">
-        <div class="post-avatar">${(p.business_name||"B").charAt(0)}</div>
-        <div>
-          <div class="post-author">${escHtml(p.business_name)}</div>
-          <div class="post-time">${timeAgo(p.created_at)}</div>
-        </div>
-      </div>
-      <div class="post-body">
-        <div class="post-content">${escHtml(p.content||"")}</div>
-        ${p.image_url ? `<img class="post-image" src="${escHtml(p.image_url)}" loading="lazy" />` : ""}
-      </div>
-      <div class="post-actions">${actionsHtml}</div>
-      <div class="comments-box" id="comments-${p.id}">
-        <div class="comment-list" id="clist-${p.id}"></div>
-        ${canInteract ? `
-          <div class="c-input-row">
-            <textarea class="c-input" id="cinput-${p.id}" rows="1" placeholder="Write a comment..."></textarea>
-            <button class="c-send" onclick="submitComment(${p.id})">Send</button>
-          </div>` : `<a href="login.html" style="font-size:0.84rem;color:var(--accent);text-decoration:none;">Sign in to comment</a>`}
-      </div>
-    </div>`;
-}
-
-function escAttr(s) { return String(s||"").replace(/'/g,"\\'").replace(/"/g,"&quot;"); }
-
-// ── FOLLOW ────────────────────────────────────────────────
-
-async function toggleFollow() {
-  const slug = getSlug();
-  const btn = document.getElementById("followBtn");
-  if (!btn) return;
-  btn.disabled = true;
-  try {
-    const res = await fetch(`${API}/api/business/${slug}/follow`, {
-      method: "POST", headers: authHeaders()
-    });
-    const data = await res.json();
-    if (data.success) {
-      btn.className = `follow-btn ${data.following ? "following" : "not-following"}`;
-      btn.textContent = data.following ? "Following" : "+ Follow";
-      const fc = document.getElementById("followerCount");
-      if (fc) fc.textContent = parseInt(fc.textContent) + (data.following ? 1 : -1);
-    }
-  } catch {}
-  btn.disabled = false;
-}
-
-// ── LIKE ─────────────────────────────────────────────────
-
-async function toggleLike(postId) {
-  if (!getToken()) { window.location.href = "login.html"; return; }
-  const btn = document.getElementById(`like-${postId}`);
-  btn.disabled = true;
-  try {
-    const res = await fetch(`${API}/api/posts/${postId}/like`, { method: "POST", headers: authHeaders() });
-    const data = await res.json();
-    if (data.success) {
-      btn.className = data.liked ? "action-btn liked" : "action-btn";
-      btn.innerHTML = (data.liked ? "❤️" : "🤍") + ` <span id="lc-${postId}">${data.like_count}</span>`;
-    }
-  } catch {}
-  btn.disabled = false;
-}
-
-// ── COMMENTS ─────────────────────────────────────────────
-
-async function toggleComments(postId) {
-  const box = document.getElementById(`comments-${postId}`);
-  if (box.classList.contains("open")) { box.classList.remove("open"); return; }
-  box.classList.add("open");
-  await loadComments(postId);
-}
-
-async function loadComments(postId) {
-  const list = document.getElementById(`clist-${postId}`);
-  list.innerHTML = '<div style="color:var(--muted);font-size:0.83rem;padding:4px 0;">Loading...</div>';
-  try {
-    const res = await fetch(`${API}/api/posts/${postId}/comments`);
-    const data = await res.json();
-    if (!data.success || data.comments.length === 0) {
-      list.innerHTML = '<div style="color:var(--muted);font-size:0.83rem;padding:4px 0;">No comments yet.</div>'; return;
-    }
-    list.innerHTML = data.comments.map(c => {
-      const isBiz = c.commenter_type === "business";
-      const name = isBiz ? escHtml(c.business_name) : escHtml(`${c.first_name} ${c.last_name}`);
-      const link = isBiz ? `business.html?slug=${c.business_slug}` : `profile.html?id=${c.commenter_user_id}`;
-      return `
-        <div class="comment">
-          <div class="c-avatar ${isBiz ? "biz" : "ind"}">${name.charAt(0)}</div>
-          <div class="c-bubble">
-            <div class="c-name"><a href="${link}">${name}</a></div>
-            <div class="c-text">${escHtml(c.content)}</div>
-            <div class="c-time">${timeAgo(c.created_at)}</div>
-          </div>
-        </div>`;
-    }).join("");
-  } catch { list.innerHTML = ""; }
-}
-
-async function submitComment(postId) {
-  const input = document.getElementById(`cinput-${postId}`);
-  const content = input.value.trim();
-  if (!content) return;
-  try {
-    const res = await fetch(`${API}/api/posts/${postId}/comments`, {
-      method: "POST", headers: authHeaders(), body: JSON.stringify({ content })
-    });
-    const data = await res.json();
-    if (data.success) { input.value = ""; await loadComments(postId); }
-    else showToast(data.error || "Failed.");
-  } catch {}
-}
-
-// ── COMPOSE ───────────────────────────────────────────────
-
-async function submitPost() {
-  const content = document.getElementById("composeText").value.trim();
-  if (!content) return;
-  const btn = document.getElementById("postBtn");
-  btn.disabled = true; btn.textContent = "Publishing...";
-
-  // @mention parse
-  const tagged_businesses = [...content.matchAll(/@([\w-]+)/g)].map(m => m[1]);
-
-  try {
-    const res = await fetch(`${API}/api/posts`, {
-      method: "POST", headers: authHeaders(),
-      body: JSON.stringify({ content, tagged_businesses })
-    });
-    const data = await res.json();
-    if (data.success) {
-      document.getElementById("composeText").value = "";
-      showToast("Post published!");
-      await loadPosts();
-    } else {
-      showToast(data.error || "Failed.");
-    }
-  } catch {}
-  btn.disabled = false; btn.textContent = "Publish";
-}
-
-// ── SHARE ─────────────────────────────────────────────────
-
-function openShare(postId, authorName, preview) {
-  if (!getToken()) { window.location.href = "login.html"; return; }
-  shareTargetId = postId;
-  document.getElementById("sharePreview").innerHTML = `<strong>${escHtml(authorName)}</strong>${escHtml(preview)}${preview.length >= 80 ? "…" : ""}`;
-  document.getElementById("shareComment").value = "";
-  document.getElementById("shareModal").classList.add("open");
-}
-function closeShare() { document.getElementById("shareModal").classList.remove("open"); shareTargetId = null; }
-
-async function confirmShare() {
-  if (!shareTargetId) return;
-  const content = document.getElementById("shareComment").value.trim();
-  try {
-    const res = await fetch(`${API}/api/posts/${shareTargetId}/share`, {
-      method: "POST", headers: authHeaders(), body: JSON.stringify({ content })
-    });
-    const data = await res.json();
-    closeShare();
-    showToast(data.success ? "Shared!" : data.error || "Failed.");
-  } catch {}
-}
-
-// ── INIT ──────────────────────────────────────────────────
-
-setupNav();
-loadBusiness();
+const API="https://datominds-backend.onrender.com";
+let bizData=null,shareTargetId=null;
+function getToken(){return localStorage.getItem("dn_token");}
+function getUser(){try{return JSON.parse(localStorage.getItem("dn_user"));}catch{return null;}}
+function getBusiness(){try{return JSON.parse(localStorage.getItem("dn_business"));}catch{return null;}}
+function getSlug(){return new URLSearchParams(window.location.search).get("slug");}
+function authHeaders(){const t=getToken();return t?{"Authorization":"Bearer "+t,"Content-Type":"application/json"}:{"Content-Type":"application/json"};}
+function escHtml(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function escAttr(s){return String(s||"").replace(/'/g,"\\'").replace(/"/g,"&quot;");}
+function timeAgo(ds){const d=new Date(ds),diff=(Date.now()-d.getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";if(diff<604800)return Math.floor(diff/86400)+"d ago";return d.toLocaleDateString("en-US",{month:"short",day:"numeric"});}
+function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2800);}
+function setupNav(){const user=getUser(),biz=getBusiness(),navRight=document.getElementById("navRight");if(user){navRight.innerHTML=`<a href="feed.html" class="btn-sm btn-ghost">Feed</a><button class="btn-sm btn-ghost" onclick="doLogout()">Sign out</button>`;}else{navRight.innerHTML=`<a href="login.html" class="btn-sm btn-ghost">Sign in</a><a href="register.html" class="btn-sm btn-primary">Join free</a>`;}}
+async function doLogout(){const token=getToken();if(token)await fetch(`${API}/api/auth/logout`,{method:"POST",headers:{"Authorization":"Bearer "+token}});localStorage.clear();window.location.href="index.html";}
+async function loadBusiness(){const slug=getSlug();if(!slug){document.getElementById("mainWrap").innerHTML='<div class="loading">No business specified.</div>';return;}const token=getToken();const headers=token?{"Authorization":"Bearer "+token}:{};try{const res=await fetch(`${API}/api/business/${slug}`,{headers});const data=await res.json();if(!data.success){document.getElementById("mainWrap").innerHTML='<div class="loading">Business not found.</div>';return;}bizData=data.business;document.title=`${bizData.business_name} · Diwanet`;renderPage();}catch{document.getElementById("mainWrap").innerHTML='<div class="loading">Connection error.</div>';}}
+function renderPage(){const b=bizData,user=getUser(),myBiz=getBusiness(),isOwner=myBiz&&myBiz.slug===b.slug,initial=b.business_name.charAt(0).toUpperCase(),joinDate=new Date(b.created_at).toLocaleDateString("en-US",{month:"long",year:"numeric"});
+const followBtnHtml=user&&!isOwner?`<button class="follow-btn ${b.is_following?"following":"not-following"}" id="followBtn" onclick="toggleFollow()">${b.is_following?"✓ Following":"+ Follow"}</button>`:isOwner?`<span class="btn-sm btn-ghost" style="cursor:default;">Your page</span>`:`<a href="login.html" class="btn-sm btn-primary">+ Follow</a>`;
+const wrap=document.getElementById("mainWrap");
+wrap.style.cssText="max-width:1060px;margin:0 auto;padding:28px 24px;display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;";
+wrap.innerHTML=`
+<div style="grid-column:1/-1;"><div class="profile-panel"><div class="profile-cover"></div><div class="profile-body">
+<div class="logo-wrap"><div class="biz-logo">${initial}</div>${followBtnHtml}</div>
+<div class="biz-name">${escHtml(b.business_name)}</div>
+<div class="biz-tags"><span class="biz-tag green">${escHtml(b.category_name||"Uncategorized")}</span><span class="biz-tag">${escHtml(b.business_type||"")}</span>${b.city?`<span class="biz-tag">📍 ${escHtml(b.city)}, ${escHtml(b.country)}</span>`:""}</div>
+${b.short_description?`<div class="biz-desc">${escHtml(b.short_description)}</div>`:""}
+<div class="biz-stats"><div><div class="biz-stat-val" id="followerCount">${b.follower_count||0}</div><div class="biz-stat-lbl">Followers</div></div><div><div class="biz-stat-val" style="color:var(--muted);font-size:0.88rem;">${joinDate}</div><div class="biz-stat-lbl">Joined</div></div></div>
+</div></div></div>
+<div>
+<div class="compose ${isOwner?"visible":""}" id="composeBox"><div class="compose-label">New Post</div><textarea id="composeText" placeholder="Share an update or tag another business with @slug..."></textarea><div class="compose-footer"><span class="compose-hint">Use @slug to tag businesses</span><button class="post-btn" id="postBtn" onclick="submitPost()">Publish</button></div></div>
+<div class="tabs"><button class="tab active" onclick="switchTab('posts')">Posts</button><button class="tab" onclick="switchTab('tagged')">Tagged</button></div>
+<div id="tab-posts" class="tab-content active"><div class="loading">Loading posts...</div></div>
+<div id="tab-tagged" class="tab-content"><div class="loading">Loading...</div></div>
+</div>
+<div class="sidebar">
+<div class="widget"><div class="widget-title">Business Info</div>
+${b.business_email?`<div class="info-row"><div class="info-lbl">Email</div><div class="info-val">${escHtml(b.business_email)}</div></div>`:""}
+${b.business_phone?`<div class="info-row"><div class="info-lbl">Phone</div><div class="info-val">${escHtml(b.business_phone)}</div></div>`:""}
+<div class="info-row"><div class="info-lbl">Location</div><div class="info-val">${escHtml(b.city?b.city+", "+b.country:b.country)}</div></div>
+<div class="info-row"><div class="info-lbl">Category</div><div class="info-val">${escHtml(b.category_name||"-")}</div></div>
+<div class="info-row"><div class="info-lbl">Type</div><div class="info-val" style="text-transform:capitalize;">${escHtml(b.business_type||"-")}</div></div></div>
+${!user?`<div class="join-widget"><h3>Join Diwanet</h3><p>Follow businesses, like and comment on posts.</p><a href="register.html" class="j-btn j-primary">Create free account</a><a href="login.html" class="j-btn j-ghost">Sign in</a></div>`:""}
+</div>`;
+loadPosts();}
+function switchTab(tab){document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",["posts","tagged"][i]===tab));document.querySelectorAll(".tab-content").forEach(el=>el.classList.remove("active"));document.getElementById(`tab-${tab}`).classList.add("active");if(tab==="tagged")loadTagged();}
+async function loadPosts(){const slug=getSlug(),token=getToken(),headers=token?{"Authorization":"Bearer "+token}:{};try{const res=await fetch(`${API}/api/business/${slug}/posts`,{headers}),data=await res.json(),container=document.getElementById("tab-posts");if(!data.success||data.posts.length===0){container.innerHTML='<div class="empty">No posts yet.</div>';return;}container.innerHTML=data.posts.map(renderPost).join("");}catch{document.getElementById("tab-posts").innerHTML='<div class="empty">Could not load posts.</div>';}}
+async function loadTagged(){const slug=getSlug(),token=getToken(),headers=token?{"Authorization":"Bearer "+token}:{};try{const res=await fetch(`${API}/api/business/${slug}/posts`,{headers}),data=await res.json(),container=document.getElementById("tab-tagged");if(!data.success||!data.tagged_posts||data.tagged_posts.length===0){container.innerHTML='<div class="empty">Not tagged in any posts yet.</div>';return;}container.innerHTML=data.tagged_posts.map(t=>`<div class="post"><div class="post-header"><div class="post-avatar">${t.business_name.charAt(0)}</div><div><div class="post-author"><a href="business.html?slug=${t.business_slug}" style="color:var(--text);text-decoration:none;">${escHtml(t.business_name)}</a> tagged this page</div><div class="post-time">${timeAgo(t.created_at)}</div></div></div><div class="post-body"><div class="post-content">${escHtml(t.content).substring(0,200)}${t.content.length>200?"…":""}</div></div></div>`).join("");}catch{document.getElementById("tab-tagged").innerHTML='<div class="empty">Could not load.</div>';}}
+function renderPost(p){const user=getUser(),canInteract=!!user,likedIcon=p.is_liked?"❤️":"🤍",likedClass=p.is_liked?"action-btn liked":"action-btn";
+const actionsHtml=canInteract?`<button class="${likedClass}" id="like-${p.id}" onclick="toggleLike(${p.id})">${likedIcon} <span id="lc-${p.id}">${p.like_count}</span></button><div class="action-sep"></div><button class="action-btn" onclick="toggleComments(${p.id})">💬 ${p.comment_count}</button><div class="action-sep"></div><button class="action-btn" onclick="openShare(${p.id},'${escAttr(p.business_name)}','${escAttr((p.content||"").substring(0,80))}')">🔁 ${p.share_count}</button>`:`<span class="action-btn" style="cursor:default;">🤍 ${p.like_count}</span><div class="action-sep"></div><span class="action-btn" style="cursor:default;">💬 ${p.comment_count}</span><div class="action-sep"></div><a href="login.html" class="action-btn" style="text-decoration:none;color:var(--accent);font-weight:600;">Sign in to interact</a>`;
+return`<div class="post" id="post-${p.id}"><div class="post-header"><div class="post-avatar">${(p.business_name||"B").charAt(0)}</div><div><div class="post-author">${escHtml(p.business_name)}</div><div class="post-time">${timeAgo(p.created_at)}</div></div></div><div class="post-body"><div class="post-content">${escHtml(p.content||"")}</div>${p.image_url?`<img class="post-image" src="${escHtml(p.image_url)}" loading="lazy" />`:"" }</div><div class="post-actions">${actionsHtml}</div><div class="comments-box" id="comments-${p.id}"><div class="comment-list" id="clist-${p.id}"></div>${canInteract?`<div class="c-input-row"><textarea class="c-input" id="cinput-${p.id}" rows="1" placeholder="Write a comment..."></textarea><button class="c-send" onclick="submitComment(${p.id})">Send</button></div>`:`<p style="font-size:0.84rem;color:var(--muted);"><a href="login.html" style="color:var(--accent);font-weight:600;">Sign in</a> to comment</p>`}</div></div>`;}
+async function toggleFollow(){const btn=document.getElementById("followBtn");if(!btn)return;btn.disabled=true;try{const res=await fetch(`${API}/api/business/${getSlug()}/follow`,{method:"POST",headers:authHeaders()}),data=await res.json();if(data.success){btn.className=`follow-btn ${data.following?"following":"not-following"}`;btn.textContent=data.following?"✓ Following":"+ Follow";const fc=document.getElementById("followerCount");if(fc)fc.textContent=parseInt(fc.textContent)+(data.following?1:-1);}}catch{}btn.disabled=false;}
+async function toggleLike(postId){if(!getToken()){window.location.href="login.html";return;}const btn=document.getElementById(`like-${postId}`);btn.disabled=true;try{const res=await fetch(`${API}/api/posts/${postId}/like`,{method:"POST",headers:authHeaders()}),data=await res.json();if(data.success){btn.className=data.liked?"action-btn liked":"action-btn";btn.innerHTML=(data.liked?"❤️":"🤍")+` <span id="lc-${postId}">${data.like_count}</span>`;}}catch{}btn.disabled=false;}
+async function toggleComments(postId){const box=document.getElementById(`comments-${postId}`);if(box.classList.contains("open")){box.classList.remove("open");return;}box.classList.add("open");await loadComments(postId);}
+async function loadComments(postId){const list=document.getElementById(`clist-${postId}`);list.innerHTML='<p style="color:var(--muted2);font-size:0.83rem;">Loading...</p>';try{const res=await fetch(`${API}/api/posts/${postId}/comments`),data=await res.json();if(!data.success||!data.comments.length){list.innerHTML='<p style="color:var(--muted2);font-size:0.83rem;">No comments yet.</p>';return;}list.innerHTML=data.comments.map(c=>{const isBiz=c.commenter_type==="business",name=isBiz?escHtml(c.business_name):escHtml(`${c.first_name} ${c.last_name}`),link=isBiz?`business.html?slug=${c.business_slug}`:`profile.html?id=${c.commenter_user_id}`;return`<div class="comment"><div class="c-avatar ${isBiz?"":"ind"}">${name.charAt(0)}</div><div class="c-bubble"><div class="c-name"><a href="${link}">${name}</a></div><div class="c-text">${escHtml(c.content)}</div><div class="c-time">${timeAgo(c.created_at)}</div></div></div>`;}).join("");}catch{list.innerHTML="";}}
+async function submitComment(postId){const input=document.getElementById(`cinput-${postId}`),content=input.value.trim();if(!content)return;try{const res=await fetch(`${API}/api/posts/${postId}/comments`,{method:"POST",headers:authHeaders(),body:JSON.stringify({content})}),data=await res.json();if(data.success){input.value="";await loadComments(postId);}else showToast(data.error||"Failed.");}catch{}}
+async function submitPost(){const content=document.getElementById("composeText").value.trim();if(!content)return;const btn=document.getElementById("postBtn");btn.disabled=true;btn.textContent="Publishing...";const tagged_businesses=[...content.matchAll(/@([\w-]+)/g)].map(m=>m[1]);try{const res=await fetch(`${API}/api/posts`,{method:"POST",headers:authHeaders(),body:JSON.stringify({content,tagged_businesses})}),data=await res.json();if(data.success){document.getElementById("composeText").value="";showToast("Post published!");await loadPosts();}else showToast(data.error||"Failed.");}catch{}btn.disabled=false;btn.textContent="Publish";}
+function openShare(postId,authorName,preview){if(!getToken()){window.location.href="login.html";return;}shareTargetId=postId;document.getElementById("sharePreview").innerHTML=`<strong>${escHtml(authorName)}</strong>${escHtml(preview)}${preview.length>=80?"…":""}`;document.getElementById("shareComment").value="";document.getElementById("shareModal").classList.add("open");}
+function closeShare(){document.getElementById("shareModal").classList.remove("open");shareTargetId=null;}
+async function confirmShare(){if(!shareTargetId)return;const content=document.getElementById("shareComment").value.trim();try{const res=await fetch(`${API}/api/posts/${shareTargetId}/share`,{method:"POST",headers:authHeaders(),body:JSON.stringify({content})}),data=await res.json();closeShare();showToast(data.success?"Shared!":data.error||"Failed.");if(data.success)await loadPosts();}catch{}}
+setupNav();loadBusiness();
 </script>
 </body>
 </html>
