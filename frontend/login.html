@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account · Diwanet</title>
+  <title>Sign In · Diwanet</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { --bg:#f5f7f2; --surface:#fff; --surface2:#f0f4ec; --border:#e2e8da; --text:#1a2418; --muted:#6b7d65; --accent:#6aaa2a; --accent-dark:#4d8a18; --accent-light:#edf7e3; --danger:#e05252; --shadow:0 4px 24px rgba(26,36,24,0.1); }
     * { box-sizing:border-box; margin:0; padding:0; }
     body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:grid; place-items:center; padding:24px; }
-    .card { width:100%; max-width:460px; background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:40px; box-shadow:var(--shadow); }
-    .brand { display:flex; align-items:center; gap:10px; margin-bottom:28px; text-decoration:none; color:var(--text); }
+    .card { width:100%; max-width:420px; background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:40px; box-shadow:var(--shadow); }
+    .brand { display:flex; align-items:center; gap:10px; margin-bottom:32px; text-decoration:none; color:var(--text); }
     .brand-mark { width:40px; height:40px; border-radius:12px; background:var(--accent); display:grid; place-items:center; font-family:'DM Serif Display',serif; color:white; font-size:1.2rem; }
     .brand-name { font-weight:700; font-size:1.1rem; }
     h1 { font-family:'DM Serif Display',serif; font-size:1.9rem; margin-bottom:6px; }
     .sub { color:var(--muted); font-size:0.9rem; margin-bottom:28px; }
-    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .field { margin-bottom:14px; }
+    .tabs { display:flex; background:var(--surface2); border-radius:12px; padding:4px; margin-bottom:24px; gap:4px; }
+    .tab { flex:1; padding:9px; border-radius:9px; text-align:center; font-size:0.88rem; font-weight:500; cursor:pointer; color:var(--muted); transition:all 0.2s; border:none; background:none; font-family:'DM Sans',sans-serif; }
+    .tab.active { background:var(--accent); color:white; font-weight:700; }
+    .field { margin-bottom:16px; }
     label { display:block; font-size:0.83rem; font-weight:600; color:var(--muted); margin-bottom:7px; }
     input { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; font-size:0.95rem; color:var(--text); font-family:'DM Sans',sans-serif; transition:border-color 0.2s; }
     input:focus { outline:none; border-color:var(--accent); background:white; }
@@ -26,9 +28,12 @@
     .msg { margin-top:14px; padding:12px 14px; border-radius:10px; font-size:0.88rem; font-weight:500; display:none; }
     .msg.error { display:block; background:#fef2f2; color:var(--danger); border:1px solid #fecaca; }
     .msg.success { display:block; background:var(--accent-light); color:var(--accent-dark); border:1px solid rgba(106,170,42,0.3); }
-    .note { margin-top:16px; padding:14px; border-radius:12px; background:var(--accent-light); border:1px solid rgba(106,170,42,0.2); font-size:0.83rem; color:var(--muted); line-height:1.6; }
+    .divider { height:1px; background:var(--border); margin:20px 0; }
     .footer-link { text-align:center; margin-top:16px; font-size:0.88rem; color:var(--muted); }
     .footer-link a { color:var(--accent); text-decoration:none; font-weight:600; }
+    .register-links { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .register-btn { padding:10px; border-radius:10px; border:1.5px solid var(--border); background:white; color:var(--text); font-size:0.85rem; font-weight:600; cursor:pointer; text-align:center; text-decoration:none; display:block; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+    .register-btn:hover { border-color:var(--accent); color:var(--accent); }
   </style>
 </head>
 <body>
@@ -37,39 +42,37 @@
       <div class="brand-mark">D</div>
       <span class="brand-name">Diwanet</span>
     </a>
-    <h1>Create account</h1>
-    <p class="sub">Join as an individual — discover and follow businesses.</p>
-    <div class="grid2">
-      <div class="field"><label>First name</label><input id="first_name" placeholder="John" /></div>
-      <div class="field"><label>Last name</label><input id="last_name" placeholder="Smith" /></div>
-    </div>
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to your account to continue.</p>
     <div class="field"><label>Email address</label><input id="email" type="email" placeholder="you@example.com" /></div>
-    <div class="field"><label>Password</label><input id="password" type="password" placeholder="Choose a strong password" /></div>
-    <div class="field"><label>Phone <span style="font-weight:400;">(optional)</span></label><input id="phone" placeholder="+1 (555) 000-0000" /></div>
-    <button class="btn" id="regBtn" onclick="doRegister()">Create account</button>
+    <div class="field"><label>Password</label><input id="password" type="password" placeholder="••••••••" /></div>
+    <button class="btn" id="loginBtn" onclick="doLogin()">Sign in</button>
     <div class="msg" id="msg"></div>
-    <div class="note">As an individual, you can follow businesses, like and comment on posts, and share business content.</div>
-    <div class="footer-link">Already have an account? <a href="login.html">Sign in</a></div>
-    <div class="footer-link" style="margin-top:8px;"><a href="index.html">← Back to home</a></div>
+    <div class="divider"></div>
+    <div class="footer-link">Don't have an account?</div>
+    <div class="register-links">
+      <a class="register-btn" href="register.html">Individual Account</a>
+      <a class="register-btn" href="create-business.html">Business Account</a>
+    </div>
+    <div class="footer-link" style="margin-top:14px;"><a href="index.html">← Back to home</a></div>
   </div>
   <script>
     const API="https://datominds-backend.onrender.com";
-    async function doRegister(){
-      const btn=document.getElementById("regBtn"),msg=document.getElementById("msg");
-      const first_name=document.getElementById("first_name").value.trim(),last_name=document.getElementById("last_name").value.trim();
+    async function doLogin(){
       const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;
-      const phone=document.getElementById("phone").value.trim();
-      if(!first_name||!last_name||!email||!password){showMsg("Please fill in all required fields.","error");return;}
-      btn.disabled=true;btn.textContent="Creating account...";msg.className="msg";
+      const btn=document.getElementById("loginBtn"),msg=document.getElementById("msg");
+      if(!email||!password){showMsg("Please fill in all fields.","error");return;}
+      btn.disabled=true;btn.textContent="Signing in...";msg.className="msg";
       try{
-        const res=await fetch(`${API}/api/auth/register`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({first_name,last_name,email,password,phone})});
+        const res=await fetch(`${API}/api/auth/login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
         const data=await res.json();
-        if(!data.success){showMsg(data.error||"Registration failed.","error");}
-        else{localStorage.setItem("dn_token",data.token);localStorage.setItem("dn_user",JSON.stringify(data.user));showMsg("Account created! Redirecting...","success");setTimeout(()=>{window.location.href="feed.html";},800);}
+        if(!data.success){showMsg(data.error||"Login failed.","error");}
+        else{localStorage.setItem("dn_token",data.token);localStorage.setItem("dn_user",JSON.stringify(data.user));if(data.business)localStorage.setItem("dn_business",JSON.stringify(data.business));showMsg("Redirecting...","success");setTimeout(()=>{window.location.href="feed.html";},600);}
       }catch(e){showMsg("Connection failed: "+e.message,"error");}
-      finally{btn.disabled=false;btn.textContent="Create account";}
+      finally{btn.disabled=false;btn.textContent="Sign in";}
     }
     function showMsg(text,type){const msg=document.getElementById("msg");msg.className="msg "+type;msg.textContent=text;}
+    document.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
   </script>
 </body>
 </html>
