@@ -168,7 +168,7 @@ app.get("/api/business/:slug", async (req, res) => {
     const { slug } = req.params;
     const session = await getSession(req);
     const [rows] = await pool.execute(
-      `SELECT b.id, b.business_name, b.slug, b.business_type, b.short_description, b.business_email, b.business_phone, b.country, b.city, b.created_at, c.name AS category_name,
+      `SELECT b.id, b.business_name, b.slug, b.business_type, b.short_description, b.business_email, b.business_phone, b.country, b.city, b.logo_url, b.cover_url, b.website, b.created_at, c.name AS category_name,
        (SELECT COUNT(*) FROM follows WHERE following_business_id = b.id) AS follower_count
        FROM businesses b LEFT JOIN categories c ON b.category_id = c.id WHERE b.slug = ? LIMIT 1`, [slug]
     );
