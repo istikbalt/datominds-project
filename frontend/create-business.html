@@ -366,8 +366,14 @@
         return;
       }
 
-      messageBox.className = "message success";
+          messageBox.className = "message success";
       messageBox.textContent = "Business page created successfully. Redirecting...";
+
+      if (result.token) {
+        localStorage.setItem("dn_token", result.token);
+        localStorage.setItem("dn_user", JSON.stringify({ id: result.user_id, role: "business_owner" }));
+        localStorage.setItem("dn_business", JSON.stringify({ id: result.business_id, slug: result.slug }));
+      }
 
       setTimeout(() => {
         window.location.href = `business.html?slug=${result.slug}`;
