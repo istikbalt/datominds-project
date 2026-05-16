@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up · Diwanet</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7f2; --surface: #fff; --surface2: #f0f4ec;
+      --border: #e2e8da; --text: #1a2418; --muted: #6b7d65; --muted2: #a0b09a;
+      --accent: #6aaa2a; --accent-dark: #4d8a18; --accent-light: #edf7e3;
+      --danger: #e05252; --shadow: 0 4px 24px rgba(26,36,24,0.1);
+      --shadow-lg: 0 8px 32px rgba(26,36,24,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif; background: var(--bg);
+      color: var(--text); min-height: 100vh;
+      display: grid; place-items: center; padding: 24px;
+    }
+    .card {
+      width: 100%; max-width: 460px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 24px;
+      padding: 40px; box-shadow: var(--shadow);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 32px; text-decoration: none; color: var(--text);
+    }
+    .brand-mark {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--accent); display: grid; place-items: center;
+      font-family: 'DM Serif Display', serif; color: white; font-size: 1.2rem;
+    }
+    .brand-name { font-weight: 700; font-size: 1.1rem; }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.9rem; margin-bottom: 6px; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+
+    /* TYPE SELECTION */
+    .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+    .type-btn {
+      padding: 20px 16px; border-radius: 16px; border: 2px solid var(--border);
+      background: var(--surface2); cursor: pointer; text-align: center;
+      transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .type-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+    .type-btn.active { border-color: var(--accent); background: var(--accent-light); }
+    .type-icon { font-size: 2rem; margin-bottom: 10px; }
+    .type-title { font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 4px; }
+    .type-desc { font-size: 0.78rem; color: var(--muted2); line-height: 1.4; }
+
+    /* FORM */
+    .form-section { display: none; }
+    .form-section.visible { display: block; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { margin-bottom: 14px; }
+    label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--muted); margin-bottom: 7px; }
+    input {
+      width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 12px 14px; font-size: 0.95rem;
+      color: var(--text); font-family: 'DM Sans', sans-serif; transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: var(--accent); background: white; }
+    input::placeholder { color: var(--muted2); }
+    .btn {
+      width: 100%; padding: 13px; border-radius: 999px; border: none;
+      background: var(--accent); color: white; font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      margin-top: 8px; transition: background 0.2s;
+    }
+    .btn:hover { background: var(--accent-dark); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline {
+      width: 100%; padding: 13px; border-radius: 999px;
+      border: 2px solid var(--accent); background: transparent;
+      color: var(--accent); font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      margin-top: 8px; transition: all 0.2s; text-align: center;
+      display: block; text-decoration: none;
+    }
+    .btn-outline:hover { background: var(--accent); color: white; }
+    .msg {
+      margin-top: 14px; padding: 12px 14px; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 500; display: none;
+    }
+    .msg.error { display: block; background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+    .msg.success { display: block; background: var(--accent-light); color: var(--accent-dark); border: 1px solid rgba(106,170,42,0.3); }
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
+    .footer-link { text-align: center; margin-top: 16px; font-size: 0.88rem; color: var(--muted); }
+    .footer-link a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .back-btn {
+      background: none; border: none; color: var(--muted); font-size: 0.85rem;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; margin-bottom: 20px;
+      display: none; padding: 0;
+    }
+    .back-btn.visible { display: block; }
+    .back-btn:hover { color: var(--accent); }
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+      .grid2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" class="brand">
+      <div class="brand-mark">D</div>
+      <span class="brand-name">Diwanet</span>
+    </a>
+
+    <button class="back-btn" id="backBtn" onclick="goBack()">← Back</button>
+
+    <h1 id="pageTitle">Create account</h1>
+    <p class="sub" id="pageSub">How will you use Diwanet?</p>
+
+    <!-- TYPE SELECTION -->
+    <div class="type-grid" id="typeSelection">
+      <button class="type-btn" onclick="selectType('individual')">
+        <div class="type-icon">👤</div>
+        <div class="type-title">Individual</div>
+        <div class="type-desc">Follow businesses, like & comment on posts</div>
+      </button>
+      <button class="type-btn" onclick="selectType('business')">
+        <div class="type-icon">🏢</div>
+        <div class="type-title">Business</div>
+        <div class="type-desc">Create a business page, share updates & grow</div>
+      </button>
+    </div>
+
+    <!-- INDIVIDUAL FORM -->
+    <div class="form-section" id="individualForm">
+      <div class="grid2">
+        <div class="field">
+          <label>First name</label>
+          <input id="first_name" placeholder="John" />
+        </div>
+        <div class="field">
+          <label>Last name</label>
+          <input id="last_name" placeholder="Smith" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input id="email" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Choose a strong password" />
+      </div>
+      <div class="field">
+        <label>Phone <span style="color:var(--muted2);font-weight:400;">(optional)</span></label>
+        <input id="phone" placeholder="+1 (555) 000-0000" />
+      </div>
+      <button class="btn" id="regBtn" onclick="doRegister()">Create account</button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <!-- BUSINESS REDIRECT -->
+    <div class="form-section" id="businessForm">
+      <p style="color:var(--muted);font-size:0.92rem;margin-bottom:20px;line-height:1.6;">
+        Creating a business page takes less than 2 minutes. You'll register your business details and go live immediately.
+      </p>
+      <a href="create-business.html" class="btn-outline">Create Business Page →</a>
+    </div>
+
+    <div class="divider"></div>
+    <div class="footer-link">Already have an account? <a href="login.html">Sign in</a></div>
+    <div class="footer-link" style="margin-top:8px;"><a href="index.html" style="color:var(--muted);font-weight:400;">← Back to home</a></div>
+  </div>
+
+  <script>
+    const API = "https://diwanet.com";
+    let currentType = null;
+
+    function selectType(type) {
+      currentType = type;
+      document.getElementById("typeSelection").style.display = "none";
+      document.getElementById("backBtn").classList.add("visible");
+
+      if (type === "individual") {
+        document.getElementById("pageTitle").textContent = "Create individual account";
+        document.getElementById("pageSub").textContent = "Follow businesses and engage with their content.";
+        document.getElementById("individualForm").classList.add("visible");
+        document.getElementById("businessForm").classList.remove("visible");
+      } else {
+        document.getElementById("pageTitle").textContent = "Create business page";
+        document.getElementById("pageSub").textContent = "Set up your business presence on Diwanet.";
+        document.getElementById("businessForm").classList.add("visible");
+        document.getElementById("individualForm").classList.remove("visible");
+      }
+    }
+
+    function goBack() {
+      document.getElementById("typeSelection").style.display = "grid";
+      document.getElementById("backBtn").classList.remove("visible");
+      document.getElementById("individualForm").classList.remove("visible");
+      document.getElementById("businessForm").classList.remove("visible");
+      document.getElementById("pageTitle").textContent = "Create account";
+      document.getElementById("pageSub").textContent = "How will you use Diwanet?";
+      currentType = null;
+    }
+
+    async function doRegister() {
+      const btn = document.getElementById("regBtn");
+      const msg = document.getElementById("msg");
+      const first_name = document.getElementById("first_name").value.trim();
+      const last_name = document.getElementById("last_name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const phone = document.getElementById("phone").value.trim();
+
+      if (!first_name || !last_name || !email || !password) {
+        showMsg("Please fill in all required fields.", "error"); return;
+      }
+
+      btn.disabled = true; btn.textContent = "Creating account..."; msg.className = "msg";
+
+      try {
+        const res = await fetch(`${API}/api/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ first_name, last_name, email, password, phone })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          showMsg(data.error || "Registration failed.", "error");
+        } else {
+          localStorage.setItem("dn_token", data.token);
+          localStorage.setItem("dn_user", JSON.stringify(data.user));
+          showMsg("Account created! Redirecting...", "success");
+          setTimeout(() => { window.location.href = "feed.html"; }, 800);
+        }
+      } catch (e) {
+        showMsg("Connection failed: " + e.message, "error");
+      } finally {
+        btn.disabled = false; btn.textContent = "Create account";
+      }
+    }
+
+    function showMsg(text, type) {
+      const msg = document.getElementById("msg");
+      msg.className = "msg " + type; msg.textContent = text;
+    }
+  </script>
+</body>
+</html>
