@@ -77,7 +77,7 @@
   <div id="tab-following" class="tab-content"><div class="loading">Loading...</div></div>
 </div>
 <script>
-const API="https://https://diwanet.com.onrender.com";
+const API="https://diwanet.com";
 function getUser(){try{return JSON.parse(localStorage.getItem("dn_user"));}catch{return null;}}
 function getToken(){return localStorage.getItem("dn_token");}
 function escHtml(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
